@@ -346,4 +346,8 @@ app.post('/api/e2payments/webhook', async (req, res) => {
     res.status(200).send('OK');
 });
 
-app.listen(PORT, () => console.log(`API a correr em http://localhost:${PORT}`));
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => console.log(`API a correr em http://localhost:${PORT}`));
+}
+
+module.exports = app;
