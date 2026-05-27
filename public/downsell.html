@@ -10,9 +10,9 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --black: #080808; --surface: #111111; --surface2: #1A1A1A;
-      --white: #FFFFFF; --grey: #888888; --grey2: #444444;
-      --border: rgba(255,255,255,0.07); --gold: #C8A96E;
+      --black: #F9F9F7; --surface: #FFFFFF; --surface2: #F3F4F6;
+      --white: #111827; --grey: #4B5563; --grey2: #9CA3AF;
+      --border: #E5E7EB; --gold: #F5A623;
     }
     body {
       font-family: 'Inter', sans-serif;
@@ -24,16 +24,18 @@
     .card {
       max-width: 440px; width: 100%;
       background: var(--surface);
-      border: 1px solid rgba(255,255,255,0.09);
+      border: 1px solid var(--border);
       border-radius: 14px; padding: 40px 36px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
     }
     @media(max-width:480px){ .card { padding: 28px 20px; } }
 
     .badge-alert {
       display: inline-block;
-      border: 1px solid rgba(255,255,255,0.15);
+      background: #FEF3C7;
+      border: 1px solid #FDE68A;
       border-radius: 100px; padding: 5px 14px;
-      font-size: 11px; font-weight: 600; color: var(--grey);
+      font-size: 11px; font-weight: 600; color: #D97706;
       margin-bottom: 24px; letter-spacing: 0.1em;
     }
     .headline {
@@ -50,7 +52,7 @@
     .sep { height: 1px; background: var(--border); margin: 24px 0; }
 
     .benefits { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
-    .benefit-row { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #C0C0C0; line-height: 1.5; }
+    .benefit-row { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--grey); line-height: 1.5; }
     .benefit-row span { color: var(--gold); font-weight: 700; flex-shrink: 0; }
 
     .price-new {
