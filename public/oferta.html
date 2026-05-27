@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oferta Secreta — Clientes Todo Dia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+
+  <!-- UTMIFY TRACKING -->
+  <script
+    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+    data-utmify-prevent-xcod-sck
+    data-utmify-prevent-subids
+    async defer
+  ></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --white:       #FFFFFF;
+      --off-white:   #F9F9F7;
+      --gray-100:    #E8E8E4;
+      --gray-300:    #C4C4BC;
+      --gray-500:    #8A8A82;
+      --gray-900:    #1A1A18;
+      --accent:      #F5A623;
+      --accent-dark: #D4891A;
+      --red:         #DC2626;
+      --green:       #16A34A;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--off-white);
+      color: var(--gray-900);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 560px;
+      width: 100%;
+      animation: fadeUp 0.45s ease-out;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* STOP badge */
+    .stop-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FEF2F2;
+      border: 1px solid rgba(220,38,38,0.3);
+      color: var(--red);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(30px, 7vw, 48px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--gray-900);
+      margin-bottom: 16px;
+    }
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .sub {
+      font-size: 17px;
+      color: var(--gray-500);
+      line-height: 1.65;
+      margin-bottom: 36px;
+    }
+
+    /* Price block */
+    .price-block {
+      background: var(--white);
+      border: 1px solid var(--gray-100);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .price-left {}
+    .price-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gray-500);
+      margin-bottom: 6px;
+    }
+    .price-old {
+      font-size: 18px;
+      text-decoration: line-through;
+      color: var(--gray-300);
+      margin-bottom: 4px;
+    }
+    .price-new {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(42px, 8vw, 58px);
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .price-new sup {
+      font-size: 22px;
+      font-weight: 700;
+      vertical-align: top;
+      margin-top: 10px;
+      margin-right: 2px;
+    }
+    .price-right {
+      text-align: center;
+    }
+    .savings-pill {
+      background: rgba(22,163,74,0.15);
+      border: 1px solid rgba(22,163,74,0.4);
+      color: #6EE7B7;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    /* Timer */
+    .timer-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 28px;
+      font-size: 14px;
+      color: var(--gray-500);
+    }
+    .timer-box {
+      background: #FEF2F2;
+      border: 1px solid rgba(220,38,38,0.25);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-family: 'Sora', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--red);
+      min-width: 72px;
+      text-align: center;
+      line-height: 1;
+    }
+    .timer-sep {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gray-500);
+      margin: 0 2px;
+    }
+    .timer-label {
+      font-size: 11px;
+      color: var(--gray-500);
+      text-align: center;
+      margin-top: 4px;
+    }
+    .timer-digit-wrap { text-align: center; }
+
+    /* CTA */
+    .btn-cta {
+      display: block;
+      width: 100%;
+      background: var(--accent);
+      color: var(--gray-900);
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      padding: 20px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.2s;
+      box-shadow: 0 6px 24px rgba(245,166,35,0.4);
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+    .btn-cta:hover {
+      background: var(--accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(245,166,35,0.5);
+    }
+
+    .btn-skip {
+      display: block;
+      text-align: center;
+      font-size: 13px;
+      color: var(--gray-300);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .btn-skip:hover { color: var(--gray-500); }
+
+    /* Bullets */
+    .bullets {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .bullet-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      color: var(--gray-700);
+    }
+    .bullet-check {
+      width: 24px; height: 24px;
+      background: #D1FAE5;
+      border: 1px solid rgba(22,163,74,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    /* Guarantee */
+    .guarantee {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: var(--gray-50);
+      border-radius: 10px;
+      border: 1px solid var(--gray-100);
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: var(--gray-500);
+    }
+    .guarantee-icon { font-size: 28px; flex-shrink: 0; }
+
+    /* Footer */
+    .footer {
+      font-size: 12px;
+      color: var(--gray-300);
+      text-align: center;
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <span class="stop-badge">🛑 Espera! Não saias ainda</span>
+
+  <h1>Esta oferta é <em>só para ti</em>.<br>E expira em breve.</h1>
+  <p class="sub">Preparámos um desconto exclusivo para ti porque não queremos que percas esta oportunidade. Mas este preço não vai ficar disponível por muito tempo.</p>
+
+  <!-- Bullets -->
+  <div class="bullets">
+    <div class="bullet-row">
+      <div class="bullet-check">✓</div>
+      <span>Curso completo "Clientes Todo Dia" — sem cortes</span>
+    </div>
+    <div class="bullet-row">
+      <div class="bullet-check">✓</div>
+      <span>Acesso imediato e vitalício após o pagamento</span>
+    </div>
+    <div class="bullet-row">
+      <div class="bullet-check">✓</div>
+      <span>Funciona mesmo que nunca tenhas feito um anúncio na vida</span>
+    </div>
+  </div>
+
+  <!-- Timer -->
+  <div class="timer-wrap">
+    <div class="timer-digit-wrap">
+      <div class="timer-box" id="t-min">05</div>
+      <div class="timer-label">MIN</div>
+    </div>
+    <div class="timer-sep">:</div>
+    <div class="timer-digit-wrap">
+      <div class="timer-box" id="t-sec">00</div>
+      <div class="timer-label">SEG</div>
+    </div>
+    &nbsp;restantes para este preço
+  </div>
+
+  <!-- Price Block -->
+  <div class="price-block">
+    <div class="price-left">
+      <div class="price-label">Preço especial de saída</div>
+      <div class="price-old">297 MZN</div>
+      <div class="price-new"><sup>MZN</sup>197</div>
+    </div>
+    <div class="price-right">
+      <div class="savings-pill">Poupa 100 MZN 🎁</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <a class="btn-cta" id="btn-checkout" href="checkout.html?price=197">
+    Sim, quero por 197 MZN →
+  </a>
+  <a class="btn-skip" onclick="window.history.back()">Não, prefiro pagar 297 MZN mais tarde.</a>
+
+  <!-- Guarantee -->
+  <div class="guarantee">
+    <div class="guarantee-icon">🛡️</div>
+    <div>
+      <strong style="display:block; margin-bottom:4px; color: var(--gray-900);">Garantia incondicional de 7 dias</strong>
+      Se não ficar satisfeito por qualquer motivo, devolvemos o dinheiro. Sem questões.
+    </div>
+  </div>
+
+  <div class="footer">
+    <div style="margin-bottom: 8px;">
+      <a href="privacidade.html" target="_blank" style="color:var(--gray-500); text-decoration:none; margin: 0 10px;">Política de Privacidade</a> | 
+      <a href="termos.html" target="_blank" style="color:var(--gray-500); text-decoration:none; margin: 0 10px;">Termos de Uso</a>
+    </div>
+    © 2026 · Clientes Todo Dia · Todos os direitos reservados
+  </div>
+</div>
+
+<script>
+    // 3-minute countdown
+    (function() {
+      const end = Date.now() + 3 * 60 * 1000;
+
+    function tick() {
+      const diff = Math.max(0, end - Date.now());
+      const m = Math.floor(diff / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('t-min').textContent = m.toString().padStart(2,'0');
+      document.getElementById('t-sec').textContent = s.toString().padStart(2,'0');
+
+      if (diff > 0) {
+        setTimeout(tick, 1000);
+      } else {
+        // Timer expired — redirect to sales page (offer over)
+        window.location.href = 'index.html';
+      }
+    }
+    tick();
+
+    // Pass UTM params to checkout if present
+    const params = new URLSearchParams(window.location.search);
+    const utmStr = params.toString();
+    const btn = document.getElementById('btn-checkout');
+    if (utmStr) {
+      btn.href = 'checkout.html?price=197&' + utmStr;
+    }
+  })();
+</script>
+<script>
+  (function() {
+    const phone = localStorage.getItem('user_phone');
+    if (phone) {
+      fetch('/api/track-page', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: phone, page: 'oferta.html' })
+      }).catch(e => console.error(e));
+    }
+  })();
+</script>
+</body>
+</html>

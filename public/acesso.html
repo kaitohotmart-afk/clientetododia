@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acesso — Clientes Todo Dia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #080808; --surface: #111111; --surface2: #1A1A1A;
+      --white: #FFFFFF; --grey: #888888; --border: rgba(255,255,255,0.07);
+      --success: #86EFAC;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black); color: var(--white);
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center;
+      padding: 24px; -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      max-width: 440px; width: 100%;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px; padding: 40px 36px;
+      text-align: center;
+    }
+    @media(max-width:480px){ .card { padding: 32px 24px; } }
+
+    .icon-success { font-size: 48px; margin-bottom: 20px; }
+    .headline {
+      font-family: 'Sora', sans-serif;
+      font-size: 22px; font-weight: 700; color: var(--success);
+      margin-bottom: 12px; letter-spacing: -0.02em;
+    }
+    .sub { font-size: 14px; color: var(--grey); line-height: 1.6; margin-bottom: 24px; }
+
+    .btn-access {
+      display: inline-block; width: 100%;
+      background: var(--white); color: var(--black);
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 16px; padding: 17px; border-radius: 7px;
+      text-decoration: none; transition: opacity 0.18s;
+      margin-bottom: 20px;
+    }
+    .btn-access:hover { opacity: 0.88; }
+
+    .extra-block {
+      background: var(--black);
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px;
+      font-size: 13px; color: #C0C0C0;
+      line-height: 1.6; text-align: left;
+      margin-bottom: 12px; display: none;
+    }
+  </style>
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1303032211684567');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1303032211684567&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+</head>
+<body>
+<div class="card">
+  <div class="icon-success">✅</div>
+  <h1 class="headline">Bem-vindo ao Clientes Todo Dia!</h1>
+  <p class="sub">O seu acesso foi activado. Tudo o que comprou está disponível abaixo.</p>
+
+  <a href="https://t.me/+c6Ba6fg-5B4zYjBh" class="btn-access">Entrar na Área de Membros →</a>
+
+  <div class="extra-block" id="block-upsell">
+    📅 <strong>Sessão incluída:</strong> vamos entrar em contacto em breve pelo WhatsApp para agendar a sua sessão de 60 min.
+  </div>
+
+  <div class="extra-block" id="block-downsell">
+    📦 <strong>Templates incluídos:</strong> serão enviados para o seu WhatsApp em breve.
+  </div>
+</div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('upsell') === 'true') {
+    document.getElementById('block-upsell').style.display = 'block';
+  }
+  if (params.get('downsell') === 'true') {
+    document.getElementById('block-downsell').style.display = 'block';
+  }
+</script>
+<script>
+  (function() {
+    const phone = localStorage.getItem('user_phone');
+    if (phone) {
+      fetch('/api/track-page', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: phone, page: 'acesso.html' })
+      }).catch(e => console.error(e));
+    }
+  })();
+</script>
+</body>
+</html>

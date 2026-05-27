@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Clientes Todo Dia</title>
+  <meta property="og:title" content="Clientes Todo Dia — Curso de Anúncios Online">
+  <meta property="og:description" content="Aprenda a atrair clientes todos os dias com anúncios online. Pagamento único de 297 MZN.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #F9FAFB;
+      --surface: #FFFFFF;
+      --text-main: #111827;
+      --text-muted: #6B7280;
+      --border: #E5E7EB;
+      --primary: #F5A623; /* Gold/Amber */
+      --primary-hover: #D98C15;
+      --success: #10B981;
+      --success-bg: #D1FAE5;
+      --err: #EF4444;
+      --bump-bg: #FFFBEB;
+      --bump-border: #FCD34D;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      max-width: 480px;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 36px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      animation: fade-in 0.5s ease-out;
+    }
+    @media(max-width:480px){ .card { padding: 32px 24px; } }
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Header */
+    .brand { font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-main); }
+    .brand-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .sep { height: 1px; background: var(--border); margin: 24px 0; }
+
+    /* Summary */
+    .summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .summary-label { font-size: 15px; font-weight: 500; color: var(--text-main); }
+    .summary-price { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 700; color: var(--primary); }
+
+    /* Order Bump */
+    .order-bump {
+      border: 2px dashed var(--bump-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      background: var(--bump-bg);
+      transition: all 0.3s ease;
+    }
+    .order-bump:hover {
+      background: #FEF3C7;
+    }
+    .bump-row { display: flex; align-items: flex-start; gap: 16px; }
+    .bump-check {
+      width: 22px; height: 22px; margin-top: 2px;
+      flex-shrink: 0; cursor: pointer; accent-color: var(--primary);
+    }
+    .bump-badge {
+      display: inline-block;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
+      color: #92400E; background: #FEF3C7; padding: 4px 8px; border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .bump-title { font-size: 15px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+    .bump-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .bump-price { font-size: 14px; font-weight: 700; color: var(--primary); margin-top: 10px; }
+
+    /* Form */
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
+    .form-input {
+      width: 100%; background: #F9FAFB;
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 16px;
+      font-size: 15px; color: var(--text-main);
+      outline: none; transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.15); background: var(--surface); }
+    .form-input::placeholder { color: #9CA3AF; }
+    .form-error { font-size: 12px; color: var(--err); margin-top: 6px; display: none; }
+
+    /* Button */
+    .btn-pay {
+      width: 100%; color: var(--surface);
+      font-family: 'Inter', sans-serif; font-weight: 600;
+      font-size: 16px; padding: 16px; border-radius: 8px;
+      border: none; cursor: pointer; margin-top: 8px;
+      transition: all 0.2s; display: flex;
+      align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-mpesa { background: #E51D2A; box-shadow: 0 4px 12px rgba(229, 29, 42, 0.2); }
+    .btn-mpesa:hover { background: #C81925; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(229, 29, 42, 0.3); }
+    .btn-emola { background: #F26522; box-shadow: 0 4px 12px rgba(242, 101, 34, 0.2); }
+    .btn-emola:hover { background: #D95316; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(242, 101, 34, 0.3); }
+    .btn-pay:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+    
+    .instruction { font-size: 13px; color: var(--text-muted); text-align: center; margin-top: 16px; line-height: 1.5; }
+
+    /* Payment Steps Guide */
+    .pay-steps {
+      display: none;
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
+      gap: 0;
+    }
+    .pay-steps.visible { display: flex; flex-direction: column; gap: 10px; animation: fade-in 0.3s ease; }
+    .pay-step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pay-step-num {
+      width: 28px; height: 28px;
+      background: #10B981;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .pay-step-text { font-size: 13px; color: #065F46; font-weight: 500; line-height: 1.4; }
+    .pay-step-arrow { color: #6EE7B7; font-size: 16px; margin: 0 auto; }
+
+    /* Loading state */
+    .state-loading { display: none; text-align: center; padding: 24px 0; }
+    .spinner {
+      width: 44px; height: 44px;
+      border: 4px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%; margin: 0 auto 24px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-title { font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--text-main); }
+    .loading-text { font-size: 15px; color: var(--text-muted); line-height: 1.6; margin-bottom: 12px; }
+    .loading-warn { font-size: 13px; color: var(--err); font-weight: 500; }
+
+    /* Success state */
+    .state-success { display: none; text-align: center; padding: 24px 0; }
+    .success-icon { font-size: 56px; margin-bottom: 20px; }
+    .success-title { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 700; color: var(--success); margin-bottom: 12px; }
+    .success-text { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+
+    /* Fake Sales Notifications */
+    .sales-notification {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      z-index: 100;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+    }
+    .sales-notification.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media(max-width: 768px) {
+      .sales-notification {
+        left: 16px; right: 16px; bottom: 16px; width: auto; max-width: none;
+      }
+    }
+    .sales-img { width: 40px; height: 40px; background: #E5E7EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .sales-content { flex: 1; }
+    .sales-text { font-size: 14px; color: var(--text-main); font-weight: 500; margin-bottom: 4px; }
+    .sales-time { font-size: 12px; color: var(--text-muted); }
+  </style>
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1303032211684567');
+  fbq('track', 'PageView');
+  fbq('track', 'InitiateCheckout');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1303032211684567&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">Clientes Todo Dia</div>
+  <div class="brand-sub">Curso de Anúncios Online</div>
+  <div class="sep"></div>
+
+  <div class="summary">
+    <div class="summary-label">Acesso Completo</div>
+    <div class="summary-price" id="summary-price">297 MZN</div>
+  </div>
+  <div class="sep"></div>
+
+  <!-- STATE 1: FORM -->
+  <div id="state-form">
+    <!-- Order Bump -->
+    <div class="order-bump">
+      <div class="bump-row">
+        <input type="checkbox" class="bump-check" id="bump-check">
+        <div>
+          <div class="bump-badge">OFERTA COMPLEMENTAR EXCLUSIVA</div>
+          <div class="bump-title">Checklist de Anúncios Prontos</div>
+          <div class="bump-desc">30 templates de copy e criativo para anúncios. É só copiar, colar e ter resultados mais rápidos.</div>
+          <div class="bump-price">+ 149 MZN</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Nome completo</label>
+      <input type="text" id="name" class="form-input" placeholder="O seu nome">
+      <div class="form-error" id="name-err">Por favor, insira o seu nome.</div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">E-mail</label>
+      <input type="email" id="email" class="form-input" placeholder="seu@email.com">
+      <div class="form-error" id="email-err">Por favor, insira um e-mail válido.</div>
+    </div>
+
+    <div class="form-label" style="margin-bottom: 12px; margin-top: 24px;">Método de Pagamento</div>
+    <div class="method-selector" style="display: flex; gap: 12px; margin-bottom: 16px;">
+      <div class="method-card" id="card-mpesa" onclick="selectMethod('mpesa')" style="flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s;">
+        <div style="font-size: 22px; margin-bottom: 4px;">📱</div>
+        <div style="font-weight: 700; color: #E51D2A; font-size: 15px;">M-Pesa</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Vodacom (84/85)</div>
+      </div>
+      <div class="method-card" id="card-emola" onclick="selectMethod('emola')" style="flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s;">
+        <div style="font-size: 22px; margin-bottom: 4px;">📲</div>
+        <div style="font-weight: 700; color: #F26522; font-size: 15px;">e-Mola</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Movitel (86/87)</div>
+      </div>
+    </div>
+
+    <!-- Guia Visual de Pagamento -->
+    <div class="pay-steps" id="pay-steps">
+      <div class="pay-step">
+        <div class="pay-step-num">1</div>
+        <div class="pay-step-text" id="step1-text">Digite o seu número M-Pesa abaixo e clique em Pagar</div>
+      </div>
+      <div class="pay-step-arrow">↓</div>
+      <div class="pay-step">
+        <div class="pay-step-num">2</div>
+        <div class="pay-step-text" id="step2-text">Vai receber uma notificação no telemóvel M-Pesa</div>
+      </div>
+      <div class="pay-step-arrow">↓</div>
+      <div class="pay-step">
+        <div class="pay-step-num">3</div>
+        <div class="pay-step-text">Digite o seu PIN secreto para confirmar. O acesso é liberado automaticamente! ✅</div>
+      </div>
+    </div>
+
+    <div id="payment-details" style="display: none;">
+      <div class="form-group">
+        <label class="form-label" id="phone-label">Número de Telemóvel</label>
+        <input type="tel" id="phone" class="form-input" placeholder="" maxlength="9">
+        <div class="form-error" id="phone-err">Número inválido.</div>
+      </div>
+
+      <button class="btn-pay" id="btn-pay-final" onclick="processPayment()"></button>
+      <p class="instruction">Após clicar, vai receber uma notificação no telemóvel para confirmar com o seu PIN.</p>
+    </div>
+  </div>
+
+  <!-- Footer Privacy Links -->
+  <div style="text-align:center; font-size:12px; color:var(--gray-400); margin-top:32px; padding-bottom:12px;">
+    <div style="margin-bottom: 6px;">
+      <a href="privacidade.html" target="_blank" style="color:var(--gray-400); text-decoration:none; margin: 0 8px;">Política de Privacidade</a> | 
+      <a href="termos.html" target="_blank" style="color:var(--gray-400); text-decoration:none; margin: 0 8px;">Termos de Uso</a>
+    </div>
+    © 2026 · Clientes Todo Dia
+  </div>
+
+  <!-- STATE 2: LOADING -->
+  <div class="state-loading" id="state-loading">
+    <div class="spinner"></div>
+    <div class="loading-title">A aguardar pagamento...</div>
+    <div class="loading-text">Verifique o seu telemóvel e confirme com o seu PIN M-Pesa ou e-Mola.</div>
+    <div class="loading-warn">Por favor, não feche esta página.</div>
+  </div>
+
+  <!-- STATE 3: SUCCESS -->
+  <div class="state-success" id="state-success">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Pagamento confirmado!</div>
+    <div class="success-text">O seu acesso foi activado com sucesso. A preparar a sua área de aluno...</div>
+  </div>
+</div>
+
+<!-- Fake Notifications Component -->
+<div class="sales-notification" id="sales-notification">
+  <div class="sales-img">🔥</div>
+  <div class="sales-content">
+    <div class="sales-text"><strong id="sales-name">João S.</strong> acabou de comprar!</div>
+    <div class="sales-time" id="sales-time">há 2 minutos</div>
+  </div>
+</div>
+
+<script>
+  const BASE = '/api';
+  let ref = null, poll = null;
+  const bumpCheck = document.getElementById('bump-check');
+  const summaryPrice = document.getElementById('summary-price');
+  let selectedMethod = null;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const basePrice = parseInt(urlParams.get('price')) || 297;
+  
+  // Set initial price display
+  summaryPrice.textContent = basePrice + ' MZN';
+
+  // Pre-fill from Captura
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedName = localStorage.getItem('lead_name');
+    const savedPhone = localStorage.getItem('lead_phone');
+    
+    if (savedName) document.getElementById('name').value = savedName;
+    if (savedPhone) {
+      document.getElementById('phone').value = savedPhone;
+      if (savedPhone.startsWith('84') || savedPhone.startsWith('85')) {
+        selectMethod('mpesa');
+      } else if (savedPhone.startsWith('86') || savedPhone.startsWith('87')) {
+        selectMethod('emola');
+      }
+    }
+  });
+
+  bumpCheck.addEventListener('change', () => {
+    const hasBump = bumpCheck.checked;
+    const total = hasBump ? basePrice + 149 : basePrice;
+    summaryPrice.textContent = total + ' MZN';
+    if(selectedMethod) {
+      selectMethod(selectedMethod);
+    }
+  });
+
+  function selectMethod(method) {
+    selectedMethod = method;
+    
+    document.getElementById('card-mpesa').style.borderColor = method === 'mpesa' ? '#E51D2A' : 'var(--border)';
+    document.getElementById('card-mpesa').style.backgroundColor = method === 'mpesa' ? 'rgba(229,29,42,0.05)' : 'transparent';
+    
+    document.getElementById('card-emola').style.borderColor = method === 'emola' ? '#F26522' : 'var(--border)';
+    document.getElementById('card-emola').style.backgroundColor = method === 'emola' ? 'rgba(242,101,34,0.05)' : 'transparent';
+
+    document.getElementById('payment-details').style.display = 'block';
+    
+    const phoneLabel = document.getElementById('phone-label');
+    const phoneInput = document.getElementById('phone');
+    const btnPayFinal = document.getElementById('btn-pay-final');
+    const paySteps = document.getElementById('pay-steps');
+    
+    const hasBump = bumpCheck.checked;
+    const total = hasBump ? basePrice + 149 : basePrice;
+
+    if (method === 'mpesa') {
+      phoneLabel.textContent = 'Número M-Pesa';
+      phoneInput.placeholder = '84 XXX XXXX ou 85 XXX XXXX';
+      btnPayFinal.textContent = `Pagar com M-Pesa (${total} MZN)`;
+      btnPayFinal.className = 'btn-pay btn-mpesa';
+      document.getElementById('step1-text').textContent = 'Digite o seu número M-Pesa abaixo e clique em Pagar';
+      document.getElementById('step2-text').textContent = 'Vai receber uma notificação M-Pesa no seu telemóvel Vodacom';
+    } else {
+      phoneLabel.textContent = 'Número e-Mola';
+      phoneInput.placeholder = '86 XXX XXXX ou 87 XXX XXXX';
+      btnPayFinal.textContent = `Pagar com e-Mola (${total} MZN)`;
+      btnPayFinal.className = 'btn-pay btn-emola';
+      document.getElementById('step1-text').textContent = 'Digite o seu número e-Mola abaixo e clique em Pagar';
+      document.getElementById('step2-text').textContent = 'Vai receber uma notificação e-Mola no seu telemóvel Movitel';
+    }
+    paySteps.classList.add('visible');
+    document.getElementById('phone').focus();
+  }
+
+  function show(s) {
+    ['form','loading','success'].forEach(id => {
+      const el = document.getElementById('state-' + id);
+      if(el) el.style.display = 'none';
+    });
+    document.getElementById('state-' + s).style.display = 'block';
+  }
+
+  async function processPayment() {
+    const method = selectedMethod;
+    if(!method) return;
+
+    const phone = document.getElementById('phone').value.replace(/\s+/g,'');
+    const name  = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const btnPayFinal = document.getElementById('btn-pay-final');
+    
+    document.getElementById('phone-err').style.display = 'none';
+    document.getElementById('name-err').style.display  = 'none';
+    document.getElementById('email-err').style.display = 'none';
+    
+    let ok = true;
+    
+    if (method === 'mpesa' && !/^(84|85)\d{7}$/.test(phone)) {
+      document.getElementById('phone-err').textContent = 'Para M-Pesa, use 84 ou 85 seguido de 7 dígitos.';
+      document.getElementById('phone-err').style.display='block'; ok=false;
+    } else if (method === 'emola' && !/^(86|87)\d{7}$/.test(phone)) {
+      document.getElementById('phone-err').textContent = 'Para e-Mola, use 86 ou 87 seguido de 7 dígitos.';
+      document.getElementById('phone-err').style.display='block'; ok=false;
+    } else if (!/^(84|85|86|87)\d{7}$/.test(phone)) {
+      document.getElementById('phone-err').textContent = 'Número inválido. Use 84, 85, 86 ou 87 seguido de 7 dígitos.';
+      document.getElementById('phone-err').style.display='block'; ok=false;
+    }
+
+    if(name.length < 2){ document.getElementById('name-err').style.display='block'; ok=false; }
+    if(!/^\S+@\S+\.\S+$/.test(email)){ document.getElementById('email-err').style.display='block'; ok=false; }
+    
+    if(!ok) return;
+
+    btnPayFinal.disabled = true;
+    btnPayFinal.textContent = 'A processar...';
+
+    try {
+      const res = await fetch(BASE+'/initiate-payment', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ phone, name, email, method, orderBump: bumpCheck.checked, total: bumpCheck.checked ? 446 : 297 })
+      });
+      const data = await res.json();
+      if(data.success && data.ref){
+        ref = data.ref;
+        show('loading');
+        poll = setInterval(checkStatus, 4000);
+      } else {
+        alert(data.message || 'Erro ao iniciar pagamento.'); 
+        resetButtons();
+      }
+    } catch(e){ 
+      alert('Erro de ligação. Tente novamente.'); 
+      resetButtons();
+    }
+  }
+
+  function resetButtons() {
+    const btnPayFinal = document.getElementById('btn-pay-final');
+    btnPayFinal.disabled = false;
+    selectMethod(selectedMethod);
+  }
+
+  async function checkStatus(){
+    if(!ref) return;
+    try {
+      const r = await fetch(BASE+'/check-payment?ref='+ref);
+      const d = await r.json();
+      if(d.paid){ clearInterval(poll); success(); }
+    } catch(e){}
+  }
+
+  function success(){
+    show('success');
+    setTimeout(()=>{ window.location.href='upsell.html?ref='+ref; }, 2000);
+  }
+
+  // --- Fake Sales Notifications Logic ---
+  const fakeNames = [
+    "Carlos M.", "Ana B.", "Pedro P.", "Sara L.", "Lucas G.",
+    "Marta V.", "Filipe N.", "Diana R.", "Tiago C."
+  ];
+  const notificationEl = document.getElementById('sales-notification');
+  const nameEl = document.getElementById('sales-name');
+  const timeEl = document.getElementById('sales-time');
+
+  function showRandomNotification() {
+    notificationEl.classList.remove('show');
+    
+    setTimeout(() => {
+      const randomName = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+      const randomMinutes = Math.floor(Math.random() * 15) + 1;
+      
+      nameEl.textContent = randomName;
+      timeEl.textContent = `há ${randomMinutes} minuto${randomMinutes > 1 ? 's' : ''}`;
+      
+      notificationEl.classList.add('show');
+      
+      setTimeout(() => {
+        notificationEl.classList.remove('show');
+      }, 5000);
+      
+    }, 1000);
+  }
+
+  setTimeout(() => {
+    showRandomNotification();
+    setInterval(() => {
+      showRandomNotification();
+    }, Math.floor(Math.random() * 8000) + 12000);
+  }, 3000);
+
+</script>
+<script>
+  (function() {
+    const phone = localStorage.getItem('user_phone');
+    if (phone) {
+      fetch('/api/track-page', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: phone, page: 'checkout.html' })
+      }).catch(e => console.error(e));
+    }
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oferta Especial — Clientes Todo Dia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #080808; --surface: #111111; --surface2: #1A1A1A;
+      --white: #FFFFFF; --grey: #888888; --grey2: #444444;
+      --border: rgba(255,255,255,0.07); --gold: #C8A96E;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black); color: var(--white);
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center;
+      padding: 24px; -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      max-width: 440px; width: 100%;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px; padding: 40px 36px;
+    }
+    @media(max-width:480px){ .card { padding: 28px 20px; } }
+
+    .badge-alert {
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 11px; font-weight: 600; color: var(--grey);
+      margin-bottom: 24px; letter-spacing: 0.1em;
+    }
+    .headline {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(18px, 3.5vw, 24px);
+      font-weight: 700; line-height: 1.25;
+      letter-spacing: -0.02em; color: var(--white);
+      margin-bottom: 12px;
+    }
+    .sub {
+      font-size: 14px; color: var(--grey); line-height: 1.75;
+      margin-bottom: 24px;
+    }
+    .sep { height: 1px; background: var(--border); margin: 24px 0; }
+
+    .benefits { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .benefit-row { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #C0C0C0; line-height: 1.5; }
+    .benefit-row span { color: var(--gold); font-weight: 700; flex-shrink: 0; }
+
+    .price-new {
+      font-family: 'Sora', sans-serif; font-size: 32px;
+      font-weight: 700; color: var(--gold); letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .price-detail { font-size: 13px; color: var(--grey); margin-bottom: 28px; }
+
+    .btn-yes {
+      width: 100%; background: var(--white); color: var(--black);
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 15px; padding: 16px; border-radius: 7px;
+      border: none; cursor: pointer; margin-bottom: 14px;
+      transition: opacity 0.18s;
+    }
+    .btn-yes:hover { opacity: 0.88; }
+    .btn-no {
+      display: block; text-align: center; font-size: 13px;
+      color: var(--grey2); cursor: pointer; text-decoration: underline;
+      background: none; border: none; width: 100%; padding: 4px;
+    }
+    .btn-no:hover { color: var(--grey); }
+  </style>
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1303032211684567');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1303032211684567&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+</head>
+<body>
+<div class="card">
+  <span class="badge-alert">ANTES DE CONTINUAR</span>
+  <h1 class="headline">Leve também 10 templates de anúncios prontos a usar</h1>
+  <p class="sub">Criativos e textos prontos para copiar, adaptar e publicar. Economize horas a criar anúncios do zero.</p>
+
+  <div class="benefits">
+    <div class="benefit-row"><span>✓</span> 10 templates de copy para anúncios no Facebook</div>
+    <div class="benefit-row"><span>✓</span> 10 templates de criativo (imagem) editável</div>
+    <div class="benefit-row"><span>✓</span> Guia de como adaptar para o seu negócio</div>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="price-new">99 MZN</div>
+  <p class="price-detail">Pagamento único · Só disponível agora</p>
+
+  <button class="btn-yes" onclick="accept()">Sim, quero os templates por 99 MZN</button>
+  <button class="btn-no" onclick="decline()">Não, seguir para o curso</button>
+</div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref') || '';
+
+  async function accept(){
+    try {
+      await fetch('/api/downsell-accept', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ref })
+      });
+    } catch(e){}
+    window.location.href = 'acesso.html?ref=' + ref + '&downsell=true';
+  }
+
+  function decline(){
+    window.location.href = 'acesso.html?ref=' + ref;
+  }
+</script>
+<script>
+  (function() {
+    const phone = localStorage.getItem('user_phone');
+    if (phone) {
+      fetch('/api/track-page', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: phone, page: 'downsell.html' })
+      }).catch(e => console.error(e));
+    }
+  })();
+</script>
+</body>
+</html>

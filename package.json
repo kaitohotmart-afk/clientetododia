@@ -1,0 +1,16 @@
+{
+  "name": "clientes-todo-dia",
+  "version": "1.0.0",
+  "description": "Backend M-Pesa",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.106.1",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2"
+  }
+}

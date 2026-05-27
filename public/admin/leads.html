@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Clientes Todo Dia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #F3F4F6;
+      --surface: #FFFFFF;
+      --text: #111827;
+      --text-muted: #6B7280;
+      --border: #E5E7EB;
+      --primary: #F5A623;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --info: #3B82F6;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── AUTH SCREEN ── */
+    .auth-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      text-align: center;
+      animation: fade-in 0.4s ease;
+    }
+    @keyframes fade-in { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+    .auth-logo { font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .auth-sub  { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; }
+    .auth-input {
+      width: 100%; padding: 14px 16px; font-size: 15px;
+      border: 1px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif; outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 16px;
+    }
+    .auth-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(245,166,35,0.15); }
+    .auth-btn {
+      width: 100%; padding: 14px; background: var(--primary);
+      color: #fff; font-size: 15px; font-weight: 600;
+      border: none; border-radius: 8px; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .auth-btn:hover { background: #D98C15; }
+
+    /* ── DASHBOARD ── */
+    .dashboard { display: none; }
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-brand { font-size: 18px; font-weight: 700; }
+    .topbar-logout {
+      font-size: 13px; color: var(--text-muted); cursor: pointer;
+      padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border);
+      background: none; font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+    .topbar-logout:hover { background: var(--bg); color: var(--text); }
+
+    .main { padding: 32px; }
+
+    /* ── STATS CARDS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    @media(max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .stat-label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+    .stat-value { font-size: 28px; font-weight: 700; }
+    .stat-value.green  { color: var(--success); }
+    .stat-value.amber  { color: var(--warning); }
+    .stat-value.blue   { color: var(--info); }
+    .stat-value.red    { color: var(--danger); }
+
+    /* ── TOOLBAR ── */
+    .toolbar {
+      display: flex; gap: 12px; align-items: center;
+      margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .toolbar select {
+      padding: 10px 14px; font-size: 14px; font-family: 'Inter', sans-serif;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); outline: none; cursor: pointer;
+    }
+    .toolbar select:focus { border-color: var(--primary); }
+    .btn-filter, .btn-export {
+      padding: 10px 18px; font-size: 14px; font-weight: 600;
+      border: none; border-radius: 8px; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: all 0.2s;
+    }
+    .btn-filter { background: var(--primary); color: #fff; }
+    .btn-filter:hover { background: #D98C15; }
+    .btn-export { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-export:hover { background: var(--bg); }
+    .result-count { margin-left: auto; font-size: 13px; color: var(--text-muted); }
+
+    /* ── TABLE ── */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead th {
+      text-align: left; padding: 14px 16px;
+      font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #F9FAFB; }
+    tbody td { padding: 14px 16px; vertical-align: middle; }
+
+    /* Segment badge */
+    .badge {
+      display: inline-block; padding: 4px 10px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; white-space: nowrap;
+    }
+    .badge-lead     { background: #EFF6FF; color: var(--info); }
+    .badge-pending  { background: #FEF3C7; color: #92400E; }
+    .badge-confirmed{ background: #D1FAE5; color: #065F46; }
+    .badge-other    { background: var(--bg); color: var(--text-muted); }
+
+    .wa-link {
+      color: #25D366; font-weight: 600; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      white-space: nowrap;
+    }
+    .wa-link:hover { text-decoration: underline; }
+
+    .bump-dot {
+      display: inline-block; width: 8px; height: 8px;
+      border-radius: 50%;
+    }
+    .dot-yes { background: var(--success); }
+    .dot-no  { background: var(--border); }
+
+    .empty-state {
+      text-align: center; padding: 60px 24px; color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 40px; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div class="auth-screen" id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Clientes Todo Dia</div>
+    <div class="auth-sub">Painel de Administração</div>
+    <input type="password" id="pass" class="auth-input" placeholder="Password de acesso"
+      onkeydown="if(event.key==='Enter') login()">
+    <button class="auth-btn" onclick="login()">Entrar no Painel</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <div class="topbar">
+    <div class="topbar-brand">Painel Admin — Clientes Todo Dia</div>
+    <div class="topbar-nav" style="display:flex; gap:16px; margin-left: 24px; flex:1;">
+      <button class="nav-btn active" onclick="switchTab('leads')" style="background:none; border:none; padding:8px 12px; font-weight:600; cursor:pointer; border-bottom:2px solid var(--primary); font-family:'Inter', sans-serif;">Leads & Vendas</button>
+      <button class="nav-btn" onclick="switchTab('integrations')" style="background:none; border:none; padding:8px 12px; font-weight:600; color:var(--text-muted); cursor:pointer; font-family:'Inter', sans-serif;">Integrações</button>
+    </div>
+    <button class="topbar-logout" onclick="logout()">Sair</button>
+  </div>
+
+  <div class="main" id="tab-leads">
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total de Leads</div>
+        <div class="stat-value blue" id="stat-total">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Leads Frios</div>
+        <div class="stat-value amber" id="stat-leads">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Checkout Abandonado</div>
+        <div class="stat-value red" id="stat-abandoned">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Compraram</div>
+        <div class="stat-value green" id="stat-bought">—</div>
+      </div>
+    </div>
+
+    <!-- Funnel Visualization -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:32px;">
+      <h3 style="font-size:16px; font-weight:700; margin-bottom:20px; color:var(--text);">Onde as pessoas estão a sair do site? (Drop-off Map)</h3>
+      <div id="funnel-map" style="display:flex; flex-direction:column; gap:12px;">
+        <!-- Preenchido via JS -->
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <select id="segment">
+        <option value="todos">Todos os Leads</option>
+        <option value="lead_frio">Lead Frio</option>
+        <option value="checkout_abandonado">Checkout Abandonado</option>
+        <option value="comprou">Compraram</option>
+      </select>
+      <button class="btn-filter" onclick="loadLeads()">Filtrar</button>
+      <button class="btn-export" onclick="exportCSV()">⬇ Exportar CSV</button>
+      <span class="result-count" id="result-count"></span>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>WhatsApp</th>
+            <th>Segmento</th>
+            <th>Order Bump</th>
+            <th>Upsell</th>
+            <th>Downsell</th>
+            <th>Total Pago</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB INTEGRAÇÕES -->
+  <div class="main" id="tab-integrations" style="display:none; max-width:800px; margin:0 auto;">
+    <h2 style="font-size:24px; margin-bottom:24px; font-weight:700;">Integrações Ativas</h2>
+    
+    <!-- Utmify Card -->
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; margin-bottom:24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-size:18px; font-weight:700; display:flex; align-items:center; gap:8px;">
+          🟢 Tracking: Utmify
+        </h3>
+        <span style="background:#D1FAE5; color:#065F46; padding:4px 10px; border-radius:100px; font-size:12px; font-weight:600;">Conectado</span>
+      </div>
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:16px;">
+        As suas notificações de venda (Postbacks) estão a ser enviadas automaticamente para a Utmify após cada compra confirmada ou Upsell.
+      </p>
+      <div style="background:var(--bg); border:1px solid var(--border); padding:12px 16px; border-radius:8px; font-family:monospace; font-size:13px; color:var(--text-muted);">
+        Token Seguro: YOA5JDFQERfY2Vx8TyNk8yYuUWr1b2YCq927
+      </div>
+    </div>
+
+    <!-- e2Payments Card -->
+    <div style="background:var(--surface); border:1px solid var(--warning); border-radius:12px; padding:24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-size:18px; font-weight:700; display:flex; align-items:center; gap:8px;">
+          🟡 Gateway: e2Payments
+        </h3>
+        <span style="background:#FEF3C7; color:#92400E; padding:4px 10px; border-radius:100px; font-size:12px; font-weight:600;">A aguardar credenciais</span>
+      </div>
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:20px;">
+        A infraestrutura de pagamentos (Initiate & Webhooks) já está desenhada no backend. Assim que tiver as credenciais oficias, insira-as abaixo para ligarmos o M-Pesa e e-Mola oficial.
+      </p>
+      
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div>
+          <label style="display:block; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Client ID</label>
+          <input type="text" placeholder="Cole aqui o seu Client ID" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:8px; font-family:'Inter'; font-size:14px;" disabled>
+        </div>
+        <div>
+          <label style="display:block; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Client Secret</label>
+          <input type="password" placeholder="Cole aqui o seu Client Secret" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:8px; font-family:'Inter'; font-size:14px;" disabled>
+        </div>
+
+        <!-- Duas Wallets separadas -->
+        <div style="background:var(--bg); border-radius:10px; padding:16px; border:1px solid var(--border);">
+          <div style="font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;">Wallets de Recebimento</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">
+                <span style="width:10px; height:10px; border-radius:50%; background:#E51D2A; display:inline-block;"></span>
+                Wallet M-Pesa
+              </label>
+              <input type="text" placeholder="Wallet ID M-Pesa" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:8px; font-family:'Inter'; font-size:14px;" disabled>
+            </div>
+            <div>
+              <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">
+                <span style="width:10px; height:10px; border-radius:50%; background:#F26522; display:inline-block;"></span>
+                Wallet e-Mola
+              </label>
+              <input type="text" placeholder="Wallet ID e-Mola" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:8px; font-family:'Inter'; font-size:14px;" disabled>
+            </div>
+          </div>
+        </div>
+
+        <button style="background:var(--border); color:var(--text-muted); padding:12px; border:none; border-radius:8px; font-weight:600; cursor:not-allowed;">Ligar e2Payments (Em breve)</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const ADMIN_PASS = 'AVEmaria12';
+  let allLeads = [];
+
+  function login() {
+    if (document.getElementById('pass').value === ADMIN_PASS) {
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display   = 'block';
+      loadLeads();
+    } else {
+      document.getElementById('pass').style.borderColor = '#EF4444';
+      document.getElementById('pass').style.boxShadow  = '0 0 0 3px rgba(239,68,68,0.15)';
+      setTimeout(() => {
+        document.getElementById('pass').style.borderColor = '';
+        document.getElementById('pass').style.boxShadow  = '';
+      }, 2000);
+    }
+  }
+
+  function logout() {
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('dashboard').style.display   = 'none';
+    document.getElementById('pass').value = '';
+  }
+
+  function switchTab(tabId) {
+    document.getElementById('tab-leads').style.display = tabId === 'leads' ? 'block' : 'none';
+    document.getElementById('tab-integrations').style.display = tabId === 'integrations' ? 'block' : 'none';
+    
+    const btns = document.querySelectorAll('.nav-btn');
+    btns[0].style.borderBottom = tabId === 'leads' ? '2px solid var(--primary)' : 'none';
+    btns[0].style.color = tabId === 'leads' ? 'var(--text)' : 'var(--text-muted)';
+    btns[1].style.borderBottom = tabId === 'integrations' ? '2px solid var(--primary)' : 'none';
+    btns[1].style.color = tabId === 'integrations' ? 'var(--text)' : 'var(--text-muted)';
+  }
+
+  async function loadLeads() {
+    const seg = document.getElementById('segment').value;
+    try {
+      const res  = await fetch('/api/leads?status=' + seg);
+      allLeads   = await res.json();
+      updateStats();
+      renderTable();
+    } catch(e) { alert('Erro ao carregar leads.'); }
+  }
+
+  function updateStats() {
+    document.getElementById('stat-total').textContent    = allLeads.length;
+    document.getElementById('stat-leads').textContent    = allLeads.filter(l => (l.segment||l.status) === 'lead_frio').length;
+    document.getElementById('stat-abandoned').textContent = allLeads.filter(l => (l.segment||l.status) === 'checkout_abandonado').length;
+    document.getElementById('stat-bought').textContent   = allLeads.filter(l => (l.segment||l.status) === 'comprou').length;
+
+    renderFunnel();
+  }
+
+  function renderFunnel() {
+    const funnelMap = document.getElementById('funnel-map');
+    if (!allLeads.length) {
+      funnelMap.innerHTML = '<div style="font-size:13px; color:var(--text-muted);">Sem dados suficientes para gerar o mapa.</div>';
+      return;
+    }
+
+    // Contar leads cujo "last_page" é X (ou se não tem last_page, assume captura)
+    const pages = {
+      'captura.html': { label: '1. Página de Captura (Início)', count: 0, color: '#3B82F6' },
+      'index.html': { label: '2. Página de Vendas (PV)', count: 0, color: '#6366F1' },
+      'oferta.html': { label: '2.5 Última Oportunidade (Back Redirect)', count: 0, color: '#F59E0B' },
+      'checkout.html': { label: '3. Checkout', count: 0, color: '#EF4444' },
+      'upsell.html': { label: '4. Upsell', count: 0, color: '#10B981' },
+      'downsell.html': { label: '5. Downsell', count: 0, color: '#8B5CF6' },
+      'acesso.html': { label: '6. Compra Concluída (Página de Acesso)', count: 0, color: '#059669' }
+    };
+
+    allLeads.forEach(l => {
+      let lp = l.last_page;
+      if (!lp) {
+        if (l.status === 'confirmed') lp = 'acesso.html';
+        else if (l.status === 'pending') lp = 'checkout.html';
+        else lp = 'captura.html';
+      }
+      if (pages[lp]) pages[lp].count++;
+    });
+
+    const total = allLeads.length;
+    let html = '';
+
+    for (const [key, data] of Object.entries(pages)) {
+      if (data.count === 0 && key !== 'captura.html' && key !== 'index.html') continue; // Ocultar páginas vazias para simplificar
+      const percent = Math.round((data.count / total) * 100);
+      
+      html += `
+        <div style="display:flex; align-items:center; gap:16px;">
+          <div style="width:280px; font-size:13px; font-weight:500; color:var(--text); flex-shrink:0;">
+            ${data.label}
+          </div>
+          <div style="flex:1; background:var(--bg); height:24px; border-radius:4px; overflow:hidden; position:relative;">
+            <div style="width:${percent}%; background:${data.color}; height:100%; transition:width 0.5s;"></div>
+          </div>
+          <div style="width:140px; font-size:13px; font-weight:600; color:var(--text-muted); text-align:right;">
+            ${data.count} leads (${percent}%)
+          </div>
+        </div>
+      `;
+    }
+
+    funnelMap.innerHTML = html;
+  }
+
+  function getWaLink(phone, status, name) {
+    if (!phone) return '—';
+    let wpPhone = phone;
+    if (wpPhone.length === 9) wpPhone = '258' + wpPhone;
+
+    const firstName = name ? name.split(' ')[0] : 'lá';
+    let msg = '';
+    if (status === 'lead_frio') {
+      msg = `Olá ${firstName}! 👋 Vi que mostraste interesse no Método Clientes Todo Dia. Posso ajudar-te com alguma dúvida antes de avançares?`;
+    } else if (status === 'checkout_abandonado') {
+      msg = `Olá ${firstName}! Reparei que iniciaste a tua inscrição no Clientes Todo Dia mas o pagamento não foi concluído. Tiveste algum problema com o M-Pesa? Estou aqui para ajudar! 😊`;
+    } else if (status === 'comprou') {
+      msg = `Olá ${firstName}! 🎉 Parabéns pela tua inscrição no Clientes Todo Dia! Já conseguiste aceder à plataforma? Como posso ajudar-te a começar?`;
+    } else {
+      msg = `Olá ${firstName}! Tudo bem?`;
+    }
+    const url = `https://wa.me/${wpPhone}?text=${encodeURIComponent(msg)}`;
+    return `<a class="wa-link" href="${url}" target="_blank">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      ${phone}
+    </a>`;
+  }
+
+  function getBadge(status) {
+    const map = {
+      'lead_frio':             ['badge-lead',      '● Lead Frio'],
+      'checkout_abandonado':   ['badge-pending',   '● Abandonado'],
+      'comprou':               ['badge-confirmed', '● Comprou'],
+    };
+    const [cls, label] = map[status] || ['badge-other', status];
+    return `<span class="badge ${cls}">${label}</span>`;
+  }
+
+  function dot(val) {
+    return val
+      ? `<span class="bump-dot dot-yes" title="Sim"></span>`
+      : `<span class="bump-dot dot-no"  title="Não"></span>`;
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = '';
+    document.getElementById('result-count').textContent = `${allLeads.length} resultado${allLeads.length !== 1 ? 's' : ''}`;
+
+    if (!allLeads.length) {
+      tbody.innerHTML = `<tr><td colspan="9" class="empty-state">
+        <div class="icon">🔍</div>
+        <div>Nenhum lead encontrado para este filtro.</div>
+      </td></tr>`;
+      return;
+    }
+
+    allLeads.forEach(l => {
+      const seg = l.segment || l.status;
+      const tr  = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="white-space:nowrap;">${new Date(l.timestamp).toLocaleString('pt-MZ', {dateStyle:'short', timeStyle:'short'})}</td>
+        <td style="font-weight:500;">${l.name || '—'}</td>
+        <td style="color:var(--text-muted); font-size:13px;">${l.email || '—'}</td>
+        <td>${getWaLink(l.phone, seg, l.name)}</td>
+        <td>${getBadge(seg)}</td>
+        <td>${dot(l.orderBump)}</td>
+        <td>${dot(l.upsell)}</td>
+        <td>${dot(l.downsell)}</td>
+        <td style="font-weight:600;">${l.totalPaid || l.total || 0} MZN</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function exportCSV() {
+    if (!allLeads.length) return alert('Sem dados para exportar');
+    let csv = 'Data,Nome,Email,WhatsApp,Segmento,OrderBump,Upsell,Downsell,Total Pago\n';
+    allLeads.forEach(l => {
+      const seg = l.segment || l.status;
+      csv += `"${l.timestamp}","${l.name||''}","${l.email||''}","${l.phone||''}","${seg}","${l.orderBump?'Sim':'Não'}","${l.upsell?'Sim':'Não'}","${l.downsell?'Sim':'Não'}","${l.totalPaid||l.total||0}"\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a    = document.createElement('a');
+    a.href     = URL.createObjectURL(blob);
+    a.download = `leads_${document.getElementById('segment').value}_${new Date().toLocaleDateString('pt-MZ').replace(/\//g,'-')}.csv`;
+    a.click();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oferta Especial — Clientes Todo Dia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #080808; --surface: #111111; --surface2: #1A1A1A;
+      --white: #FFFFFF; --grey: #888888; --grey2: #444444;
+      --border: rgba(255,255,255,0.07); --gold: #C8A96E;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black); color: var(--white);
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center;
+      padding: 24px; -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      max-width: 480px; width: 100%;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px; padding: 40px 36px;
+    }
+    @media(max-width:480px){ .card { padding: 28px 20px; } }
+
+    .badge-confirm {
+      display: inline-block;
+      background: rgba(134,239,172,0.06);
+      border: 1px solid rgba(134,239,172,0.2);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 12px; font-weight: 600; color: #86EFAC;
+      margin-bottom: 24px; letter-spacing: 0.02em;
+    }
+    .headline {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 700; line-height: 1.25;
+      letter-spacing: -0.02em; color: var(--white);
+      margin-bottom: 14px;
+    }
+    .sub {
+      font-size: 15px; color: var(--grey); line-height: 1.75;
+      margin-bottom: 28px;
+    }
+    .sep { height: 1px; background: var(--border); margin: 24px 0; }
+
+    .benefits { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .benefit-row { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #C0C0C0; }
+    .benefit-row span { color: var(--gold); font-weight: 700; flex-shrink: 0; }
+
+    .price-block { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
+    .price-old { font-size: 16px; color: var(--grey2); text-decoration: line-through; }
+    .price-new {
+      font-family: 'Sora', sans-serif; font-size: 36px;
+      font-weight: 700; color: var(--gold); letter-spacing: -0.02em;
+    }
+    .price-detail { font-size: 13px; color: var(--grey); margin-bottom: 28px; }
+
+    .btn-yes {
+      width: 100%; background: var(--white); color: var(--black);
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 16px; padding: 17px; border-radius: 7px;
+      border: none; cursor: pointer; margin-bottom: 14px;
+      transition: opacity 0.18s;
+    }
+    .btn-yes:hover { opacity: 0.88; }
+    .btn-no {
+      display: block; text-align: center; font-size: 13px;
+      color: var(--grey2); cursor: pointer; text-decoration: underline;
+      background: none; border: none; width: 100%; padding: 4px;
+    }
+    .btn-no:hover { color: var(--grey); }
+  </style>
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1303032211684567');
+  fbq('track', 'PageView');
+  fbq('track', 'Purchase', {value: 297, currency: 'MZN'});
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1303032211684567&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+</head>
+<body>
+<div class="card">
+  <span class="badge-confirm">✅ Pagamento confirmado — oferta exclusiva para si</span>
+  <h1 class="headline">Quer que eu monte a sua primeira campanha consigo?</h1>
+  <p class="sub">Numa sessão de 60 minutos pelo WhatsApp, montamos juntos a sua primeira campanha de anúncios do zero — público, criativo, orçamento e tudo configurado.</p>
+
+  <div class="benefits">
+    <div class="benefit-row"><span>✓</span> Sessão de 60 min ao vivo pelo WhatsApp</div>
+    <div class="benefit-row"><span>✓</span> Configuração da sua conta de anúncios</div>
+    <div class="benefit-row"><span>✓</span> Primeiro anúncio criado durante a sessão</div>
+    <div class="benefit-row"><span>✓</span> Gravação da sessão para rever quando quiser</div>
+  </div>
+
+  <div class="sep"></div>
+
+  <div class="price-block">
+    <div class="price-old">999 MZN</div>
+    <div class="price-new">499 MZN</div>
+  </div>
+  <p class="price-detail">Pagamento único · Apenas para quem acabou de comprar</p>
+
+  <button class="btn-yes" onclick="accept()">Sim, quero a sessão por 499 MZN →</button>
+  <button class="btn-no" onclick="decline()">Não, quero apenas o curso</button>
+</div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref') || '';
+
+  async function accept(){
+    try {
+      await fetch('/api/upsell-accept', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ref })
+      });
+    } catch(e){}
+    window.location.href = 'acesso.html?ref=' + ref + '&upsell=true';
+  }
+
+  function decline(){
+    window.location.href = 'downsell.html?ref=' + ref;
+  }
+</script>
+<script>
+  (function() {
+    const phone = localStorage.getItem('user_phone');
+    if (phone) {
+      fetch('/api/track-page', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: phone, page: 'upsell.html' })
+      }).catch(e => console.error(e));
+    }
+  })();
+</script>
+</body>
+</html>

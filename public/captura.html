@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acesso Exclusivo — Clientes Todo Dia</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- UTMIFY TRACKING SCRIPT -->
+  <script
+    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+    data-utmify-prevent-xcod-sck
+    data-utmify-prevent-subids
+    async
+    defer
+  ></script>
+
+  <!-- UTMIFY BACK REDIRECT SCRIPT -->
+  <script>
+    // Redireciona para a página de oferta de saída quando o utilizador tenta sair
+    const link = '/oferta.html';
+
+    function setBackRedirect(url) {
+      let urlBackRedirect = url;
+      urlBackRedirect = urlBackRedirect.trim() +
+        (urlBackRedirect.indexOf('?') > 0 ? '&' : '?') +
+        document.location.search.replace('?', '').toString();
+
+      history.pushState({}, '', location.href);
+      history.pushState({}, '', location.href);
+      history.pushState({}, '', location.href);
+
+      window.addEventListener('popstate', () => {
+        console.log('onpopstate', urlBackRedirect);
+        setTimeout(() => {
+          location.href = urlBackRedirect;
+        }, 1);
+      });
+    }
+
+    setBackRedirect(link);
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --white:       #FFFFFF;
+      --off-white:   #F9F9F7;
+      --gray-50:     #F5F5F3;
+      --gray-100:    #E8E8E4;
+      --gray-300:    #C4C4BC;
+      --gray-500:    #8A8A82;
+      --gray-700:    #3D3D3A;
+      --gray-900:    #1A1A18;
+      --accent:      #F5A623;
+      --accent-dark: #D4891A;
+      --err:         #DC2626;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--off-white); 
+      color: var(--gray-900);
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center;
+      padding: 24px; -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      max-width: 420px; width: 100%;
+      background: var(--white);
+      border: 1px solid var(--gray-100);
+      border-radius: 16px; padding: 40px 32px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+    }
+    @media(max-width:480px){ .card { padding: 32px 24px; } }
+
+
+    .headline {
+      font-family: 'Sora', sans-serif; font-size: clamp(22px, 5vw, 28px);
+      font-weight: 700; line-height: 1.25; letter-spacing: -0.02em;
+      color: var(--gray-900); margin-bottom: 12px;
+    }
+    .sub {
+      font-size: 15px; color: var(--gray-500); line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .sep { height: 1px; background: var(--gray-100); margin: 24px 0; }
+    
+    .form-label {
+      display: block; font-size: 12px; font-weight: 600;
+      letter-spacing: 0.06em; color: var(--gray-500); margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .form-input {
+      width: 100%; background: var(--off-white);
+      border: 1.5px solid var(--gray-100);
+      border-radius: 10px; padding: 14px 16px;
+      font-size: 15px; color: var(--gray-900);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: 'Inter', sans-serif; margin-bottom: 14px;
+    }
+    .form-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(245,166,35,0.15);
+      background: var(--white);
+    }
+    .form-input::placeholder { color: var(--gray-300); }
+    .form-error { font-size: 12px; color: var(--err); margin-top: -10px; margin-bottom: 12px; display: none; }
+    
+    .btn {
+      width: 100%; background: var(--accent); color: var(--gray-900);
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 16px; padding: 17px; border-radius: 10px;
+      border: none; cursor: pointer; margin-top: 4px;
+      transition: all 0.2s; box-shadow: 0 4px 14px rgba(245,166,35,0.3);
+    }
+    .btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1 class="headline">Descubra como ter clientes novos todos os dias com anúncios</h1>
+  <p class="sub">Insira os seus dados para ver os detalhes e aceder à oferta especial.</p>
+  <div class="sep"></div>
+  <label class="form-label">Nome completo</label>
+  <input type="text" id="cap-name" class="form-input" placeholder="O seu nome">
+  <div class="form-error" id="name-err">Por favor insira o seu nome.</div>
+  
+  <label class="form-label">WhatsApp</label>
+  <input type="tel" id="cap-phone" class="form-input" placeholder="84 XXX XXXX ou 86 XXX XXXX" maxlength="9">
+  <div class="form-error" id="phone-err">Número inválido. Use 84, 85, 86 ou 87 com 9 dígitos.</div>
+  
+  <button class="btn" id="submit-btn" onclick="submitForm()">Ver Oferta Especial →</button>
+  
+  <div style="text-align:center; font-size:12px; color:var(--gray-300); margin-top:24px;">
+    <div style="margin-bottom: 6px;">
+      <a href="privacidade.html" target="_blank" style="color:var(--gray-300); text-decoration:none; margin: 0 8px;">Política de Privacidade</a> | 
+      <a href="termos.html" target="_blank" style="color:var(--gray-300); text-decoration:none; margin: 0 8px;">Termos de Uso</a>
+    </div>
+    © 2026 · Clientes Todo Dia
+  </div>
+</div>
+<script>
+  async function submitForm(){
+    const name  = document.getElementById('cap-name').value.trim();
+    const phone = document.getElementById('cap-phone').value.replace(/\s+/g,'');
+    const btn   = document.getElementById('submit-btn');
+    
+    document.getElementById('name-err').style.display='none';
+    document.getElementById('phone-err').style.display='none';
+    
+    let ok = true;
+    if(name.length < 2){ document.getElementById('name-err').style.display='block'; ok=false; }
+    if(!/^(84|85|86|87)\d{7}$/.test(phone)){ document.getElementById('phone-err').style.display='block'; ok=false; }
+    if(!ok) return;
+
+    btn.textContent = 'A processar...';
+    btn.disabled = true;
+
+    try {
+      await fetch('/api/save-lead', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ name, phone, source:'captura', timestamp: new Date().toISOString() })
+      });
+    } catch(e){}
+    
+    localStorage.setItem('lead_name', name);
+    localStorage.setItem('lead_phone', phone);
+    window.location.href = 'index.html';
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submitForm();
+  });
+</script>
+</body>
+</html>
