@@ -20,6 +20,24 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.use(cors());
 app.use(express.json());
+
+// ==========================================
+// HEADERS DE SEGURANÇA ANTI-CLONE
+// ==========================================
+app.use((req, res, next) => {
+    // Bloqueia embebing em iFrames de qualquer origem
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    // Politica de segurança de conteúdo: iframes só do próprio domínio
+    res.setHeader('Content-Security-Policy', "frame-ancestors 'self' https://www.clientetodsdia.site https://clientetodsdia.site");
+    // Impede que o browser "adivinhe" o tipo de conteúdo
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    // Força HTTPS em futuras visitas (1 ano)
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    // Não envia o URL de origem nas referências externas
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ==========================================
