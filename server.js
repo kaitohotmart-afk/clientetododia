@@ -359,6 +359,8 @@ app.post('/api/lojou/webhook', async (req, res) => {
         const amount = parseFloat(payload.amount) || 0;
         const customerEmail = payload.customer?.email || '';
         const customerPhone = payload.customer?.mobile_number || '';
+        const transactionId = payload.transaction_id || payload.order_number || '';
+        const paymentMethod = payload.payment_method || '';
         
         let dbStatus = 'pending';
         if (status === 'approved' || orderType === 'order_approved') {
@@ -398,7 +400,9 @@ app.post('/api/lojou/webhook', async (req, res) => {
                 await supabase.from('leads').update({
                     status: 'confirmed',
                     totalPaid: amount || lead.total || 297,
-                    access_sent: true
+                    access_sent: true,
+                    transaction_id: transactionId,
+                    payment_method: paymentMethod
                 }).eq('id', lead.id);
 
                 console.log(`[LOJOU] ✅ Venda confirmada e guardada no Supabase!`);
@@ -406,7 +410,9 @@ app.post('/api/lojou/webhook', async (req, res) => {
                 await sendToUtmify({ ...lead, totalPaid: amount || 297 }, 'Purchase');
             } else if (dbStatus === 'failed') {
                 await supabase.from('leads').update({
-                    status: 'failed'
+                    status: 'failed',
+                    transaction_id: transactionId,
+                    payment_method: paymentMethod
                 }).eq('id', lead.id);
             }
         } else {
@@ -420,6 +426,8 @@ app.post('/api/lojou/webhook', async (req, res) => {
                     status: 'confirmed',
                     source: 'lojou_direto',
                     totalPaid: amount,
+                    transaction_id: transactionId,
+                    payment_method: paymentMethod,
                     timestamp: new Date().toISOString(),
                     access_sent: true
                 }]).select('*').single();
