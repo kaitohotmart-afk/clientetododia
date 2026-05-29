@@ -147,15 +147,18 @@ app.post('/api/track', async (req, res) => {
             .maybeSingle();
 
         if (existing) {
-            await supabase.from('page_views')
+            const { error } = await supabase.from('page_views')
                 .update({ views: existing.views + 1 })
                 .eq('id', existing.id);
+            if (error) console.error('Supabase update error:', error);
         } else {
-            await supabase.from('page_views')
+            const { error } = await supabase.from('page_views')
                 .insert([{ page, date: today, views: 1 }]);
+            if (error) console.error('Supabase insert error:', error);
         }
         res.json({ ok: true });
     } catch (e) {
+        console.error('Erro no /api/track:', e);
         // Falha silenciosa para não afetar o utilizador
         res.json({ ok: true });
     }
