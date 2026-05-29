@@ -282,6 +282,7 @@
       <div class="topbar-brand">Clientes <span>Todo Dia</span></div>
       <nav style="display:flex; gap:4px;">
         <button class="nav-btn active" id="nav-leads" onclick="switchTab('leads')">📊 Leads & Vendas</button>
+        <button class="nav-btn" id="nav-metrics" onclick="switchTab('metrics')">📈 Métricas Reais</button>
         <button class="nav-btn" id="nav-integrations" onclick="switchTab('integrations')">🔌 Integrações</button>
       </nav>
     </div>
@@ -385,6 +386,40 @@
     </div>
   </div>
 
+  <!-- TAB METRICS -->
+  <div class="main" id="tab-metrics" style="display:none; max-width:860px; margin:0 auto;">
+    <h2 style="font-size:22px; margin-bottom:24px; font-weight:800; letter-spacing:-0.3px;">📈 Métricas de Tráfego & Conversão</h2>
+    
+    <div class="kpi-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="kpi-card blue">
+        <span class="kpi-icon">👀</span>
+        <div class="kpi-label">Total de Visitantes</div>
+        <div class="kpi-value blue" id="metric-total-views">—</div>
+        <div class="kpi-sub">Página de Vendas</div>
+      </div>
+      <div class="kpi-card green">
+        <span class="kpi-icon">✅</span>
+        <div class="kpi-label">Taxa Global</div>
+        <div class="kpi-value green" id="metric-global-rate">—%</div>
+        <div class="kpi-sub">Vendas / Visitantes</div>
+      </div>
+      <div class="kpi-card amber">
+        <span class="kpi-icon">📅</span>
+        <div class="kpi-label">Visitas Hoje</div>
+        <div class="kpi-value amber" id="metric-today-views">—</div>
+        <div class="kpi-sub">Acessos Hoje (PV)</div>
+      </div>
+    </div>
+
+    <div class="funnel-card" style="margin-top:24px;">
+      <div class="chart-title">📊 Funil Completo (Visitantes Reais)</div>
+      <div style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">
+        Exibe o número exato de acessos a cada página, com taxa de conversão entre etapas.
+      </div>
+      <div id="real-funnel-map" style="display:flex; flex-direction:column; gap:10px;"></div>
+    </div>
+  </div>
+
   <!-- TAB INTEGRAÇÕES -->
   <div class="main" id="tab-integrations" style="display:none; max-width:860px; margin:0 auto;">
     <h2 style="font-size:22px; margin-bottom:24px; font-weight:800; letter-spacing:-0.3px;">🔌 Integrações Ativas</h2>
@@ -473,10 +508,10 @@
   }
 
   function switchTab(tabId) {
-    ['leads', 'integrations'].forEach(t => {
+    ['leads', 'integrations', 'metrics'].forEach(t => {
       document.getElementById('tab-' + t).style.display = (t === tabId) ? 'block' : 'none';
       const btn = document.getElementById('nav-' + t);
-      btn.classList.toggle('active', t === tabId);
+      if(btn) btn.classList.toggle('active', t === tabId);
     });
   }
 
@@ -490,7 +525,40 @@
       renderCharts();
       renderFunnel();
       renderTable();
+      loadMetrics(); // also load metrics when refreshing
     } catch(e) { alert('Erro ao carregar leads.'); }
+  }
+
+  async function loadMetrics() {
+    try {
+      const res = await fetch('/api/metrics');
+      const data = await res.json();
+      
+      document.getElementById('metric-total-views').textContent = data.summary.total_visitas;
+      document.getElementById('metric-today-views').textContent = data.summary.visitas_hoje;
+      document.getElementById('metric-global-rate').textContent = data.summary.taxa_global + '%';
+
+      let html = '';
+      const maxViews = Math.max(...data.funnel.map(step => step.views || 0));
+      
+      data.funnel.forEach(step => {
+        const percent = maxViews > 0 ? Math.round((step.views / maxViews) * 100) : 0;
+        const convStr = step.conversion !== null ? `<span style="color:#10B981; font-weight:700;">${step.conversion}% conversão</span>` : '';
+        html += `
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div style="width:200px; font-size:13px; font-weight:600; flex-shrink:0;">${step.label}</div>
+            <div style="flex:1; background:var(--bg); height:22px; border-radius:6px; overflow:hidden;">
+              <div style="width:${percent}%; background:var(--primary); height:100%; border-radius:6px; transition:width 0.6s ease;"></div>
+            </div>
+            <div style="width:180px; font-size:13px; font-weight:600; color:var(--text-muted); text-align:right; flex-shrink:0;">
+              ${step.views} visitas ${convStr ? ' | ' + convStr : ''}
+            </div>
+          </div>`;
+      });
+      document.getElementById('real-funnel-map').innerHTML = html || 'Sem dados.';
+    } catch(e) {
+      console.error('Erro ao carregar métricas do funil:', e);
+    }
   }
 
   function updateStats() {

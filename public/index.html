@@ -23,6 +23,9 @@
     defer
   ></script>
 
+  <!-- MÉTRICAS DO FUNIL -->
+  <script>fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({page:'index.html'})}).catch(()=>{});</script>
+
   <style>
     /* ─── RESET ─── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

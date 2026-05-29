@@ -129,6 +129,102 @@ app.post('/api/track-page', async (req, res) => {
 });
 
 // ==========================================
+// MÉTRICAS DO FUNIL (PAGEVIEWS ANÓNIMOS)
+// ==========================================
+// Regista uma visita anónima por página (sem dados pessoais)
+app.post('/api/track', async (req, res) => {
+    const { page } = req.body;
+    if (!page) return res.status(400).json({ ok: false });
+
+    try {
+        // Tenta incrementar o contador existente para hoje
+        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        const { data: existing } = await supabase
+            .from('page_views')
+            .select('id, views')
+            .eq('page', page)
+            .eq('date', today)
+            .maybeSingle();
+
+        if (existing) {
+            await supabase.from('page_views')
+                .update({ views: existing.views + 1 })
+                .eq('id', existing.id);
+        } else {
+            await supabase.from('page_views')
+                .insert([{ page, date: today, views: 1 }]);
+        }
+        res.json({ ok: true });
+    } catch (e) {
+        // Falha silenciosa para não afetar o utilizador
+        res.json({ ok: true });
+    }
+});
+
+// Retorna métricas agregadas do funil
+app.get('/api/metrics', async (req, res) => {
+    try {
+        // Total de visualizações por página (todos os dias)
+        const { data: pageViews } = await supabase
+            .from('page_views')
+            .select('page, views');
+
+        // Agrupa por página
+        const totals = {};
+        (pageViews || []).forEach(row => {
+            totals[row.page] = (totals[row.page] || 0) + row.views;
+        });
+
+        // Dados do funil em ordem
+        const funnel = [
+            { key: 'index',    label: '🏠 Página de Vendas',  page: 'index.html'    },
+            { key: 'checkout', label: '🛒 Checkout',           page: 'checkout.html' },
+            { key: 'upsell',   label: '⬆️ Upsell',            page: 'upsell.html'   },
+            { key: 'downsell', label: '⬇️ Downsell',          page: 'downsell.html' },
+            { key: 'acesso',   label: '✅ Acesso Entregue',    page: 'acesso.html'   },
+        ];
+
+        const funnelData = funnel.map((step, i) => {
+            const views = totals[step.page] || 0;
+            const prevViews = i === 0 ? views : (totals[funnel[i-1].page] || 0);
+            const conversion = (i === 0 || prevViews === 0) ? null
+                : Math.round((views / prevViews) * 1000) / 10;
+            return { ...step, views, conversion };
+        });
+
+        // Dados de leads do Supabase
+        const { data: leads } = await supabase.from('leads').select('status, timestamp');
+        const leadsTotal   = (leads || []).length;
+        const confirmed    = (leads || []).filter(l => l.status === 'confirmed').length;
+        const pending      = (leads || []).filter(l => l.status === 'pending').length;
+
+        // Hoje
+        const todayStr = new Date().toISOString().slice(0, 10);
+        const { data: todayViews } = await supabase
+            .from('page_views')
+            .select('views')
+            .eq('page', 'index.html')
+            .eq('date', todayStr);
+        const visitasHoje = (todayViews || []).reduce((s, r) => s + r.views, 0);
+
+        res.json({
+            funnel: funnelData,
+            summary: {
+                total_visitas: totals['index.html'] || 0,
+                visitas_hoje: visitasHoje,
+                total_leads: leadsTotal,
+                confirmados: confirmed,
+                pendentes: pending,
+                taxa_global: leadsTotal === 0 ? 0
+                    : Math.round((confirmed / (totals['index.html'] || 1)) * 1000) / 10
+            }
+        });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// ==========================================
 // ETAPA 1: CAPTURA (LEAD)
 // ==========================================
 app.post('/api/save-lead', async (req, res) => {
