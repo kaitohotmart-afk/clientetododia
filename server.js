@@ -164,6 +164,24 @@ app.post('/api/track', async (req, res) => {
     }
 });
 
+// ==========================================
+// EVENTOS DE COMPORTAMENTO (scroll, tempo, cliques CTA)
+// ==========================================
+app.post('/api/track-event', async (req, res) => {
+    const { page, event, value, session_id } = req.body;
+    if (!page || !event) return res.status(400).json({ ok: false });
+    try {
+        const { error } = await supabase.from('page_events').insert([{
+            page, event, value: String(value || ''), session_id: session_id || null
+        }]);
+        if (error) console.error('Supabase track-event error:', error);
+        res.json({ ok: true });
+    } catch (e) {
+        console.error('Erro no /api/track-event:', e);
+        res.json({ ok: true });
+    }
+});
+
 // Retorna métricas agregadas do funil
 app.get('/api/metrics', async (req, res) => {
     try {
@@ -210,16 +228,63 @@ app.get('/api/metrics', async (req, res) => {
             .eq('date', todayStr);
         const visitasHoje = (todayViews || []).reduce((s, r) => s + r.views, 0);
 
+        // ── MÉTRICAS DE COMPORTAMENTO ──
+        const { data: events } = await supabase
+            .from('page_events')
+            .select('event, value, session_id')
+            .eq('page', 'index.html');
+
+        const evts = events || [];
+
+        // Tempo médio na página (segundos)
+        const timeEvents = evts.filter(e => e.event === 'time_on_page').map(e => parseFloat(e.value) || 0);
+        const avgTime = timeEvents.length > 0
+            ? Math.round(timeEvents.reduce((a, b) => a + b, 0) / timeEvents.length)
+            : 0;
+
+        // Profundidade de rolagem — distribuição por milestone
+        const scrollCounts = { '25': 0, '50': 0, '75': 0, '100': 0 };
+        evts.filter(e => e.event === 'scroll_depth').forEach(e => {
+            if (scrollCounts[e.value] !== undefined) scrollCounts[e.value]++;
+        });
+
+        // Sessões únicas que fizeram scroll (base para %)
+        const totalSessions = new Set(evts.filter(e => e.session_id).map(e => e.session_id)).size || 1;
+        const scrollPct = {
+            '25':  Math.round((scrollCounts['25']  / totalSessions) * 100),
+            '50':  Math.round((scrollCounts['50']  / totalSessions) * 100),
+            '75':  Math.round((scrollCounts['75']  / totalSessions) * 100),
+            '100': Math.round((scrollCounts['100'] / totalSessions) * 100),
+        };
+
+        // Cliques no botão de compra
+        const ctaClicks = evts.filter(e => e.event === 'cta_click').length;
+        const totalVisits = totals['index.html'] || 1;
+        const ctaCtr = Math.round((ctaClicks / totalVisits) * 1000) / 10;
+
+        // Compras confirmadas via webhook (já existem na tabela leads)
+        const taxaCompra = totals['index.html']
+            ? Math.round((confirmed / totals['index.html']) * 1000) / 10
+            : 0;
+
         res.json({
             funnel: funnelData,
             summary: {
-                total_visitas: totals['index.html'] || 0,
-                visitas_hoje: visitasHoje,
-                total_leads: leadsTotal,
-                confirmados: confirmed,
-                pendentes: pending,
-                taxa_global: leadsTotal === 0 ? 0
+                total_visitas:  totals['index.html'] || 0,
+                visitas_hoje:   visitasHoje,
+                total_leads:    leadsTotal,
+                confirmados:    confirmed,
+                pendentes:      pending,
+                taxa_global:    leadsTotal === 0 ? 0
                     : Math.round((confirmed / (totals['index.html'] || 1)) * 1000) / 10
+            },
+            behavior: {
+                avg_time_seconds: avgTime,
+                scroll_depth_pct: scrollPct,
+                cta_clicks:       ctaClicks,
+                cta_ctr:          ctaCtr,
+                taxa_compra:      taxaCompra,
+                total_sessions:   totalSessions
             }
         });
     } catch (e) {

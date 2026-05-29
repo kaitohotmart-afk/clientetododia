@@ -418,6 +418,41 @@
       </div>
       <div id="real-funnel-map" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
+
+    <!-- COMPORTAMENTO DO UTILIZADOR -->
+    <div class="funnel-card" style="margin-top:24px;">
+      <div class="chart-title">🔍 Comportamento na Página de Vendas</div>
+      <div style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Tempo, rolagem e cliques nos botões de compra</div>
+
+      <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:24px;">
+        <div style="background:var(--bg); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:8px;">⏱️ Tempo Médio na Página</div>
+          <div style="font-size:32px; font-weight:900; color:var(--info);" id="b-avg-time">—</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:4px);">segundos</div>
+        </div>
+        <div style="background:var(--bg); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:8px;">🛒 Cliques no Botão de Compra</div>
+          <div style="font-size:32px; font-weight:900; color:var(--primary);" id="b-cta-clicks">—</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">cliques totais</div>
+        </div>
+        <div style="background:var(--bg); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:8px;">🎯 CTR Botão de Compra</div>
+          <div style="font-size:32px; font-weight:900; color:var(--success);" id="b-cta-ctr">—</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">visitantes que clicaram</div>
+        </div>
+        <div style="background:var(--bg); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); margin-bottom:8px;">💸 Taxa de Compra</div>
+          <div style="font-size:32px; font-weight:900; color:var(--success);" id="b-taxa-compra">—</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">visitantes que compraram</div>
+        </div>
+      </div>
+
+      <!-- SCROLL DEPTH VISUAL -->
+      <div style="font-size:13px; font-weight:700; margin-bottom:14px; color:var(--text);">Profundidade de Rolagem</div>
+      <div style="display:flex; flex-direction:column; gap:10px;" id="b-scroll-wrap">
+        <div style="color:var(--text-muted); font-size:13px;">A carregar...</div>
+      </div>
+    </div>
   </div>
 
   <!-- TAB INTEGRAÇÕES -->
@@ -556,6 +591,39 @@
           </div>`;
       });
       document.getElementById('real-funnel-map').innerHTML = html || 'Sem dados.';
+
+      // ── COMPORTAMENTO ──
+      if (data.behavior) {
+        const b = data.behavior;
+
+        // Tempo médio
+        const mins = Math.floor(b.avg_time_seconds / 60);
+        const secs = b.avg_time_seconds % 60;
+        document.getElementById('b-avg-time').textContent =
+          b.avg_time_seconds > 0 ? (mins > 0 ? `${mins}m ${secs}s` : `${secs}s`) : '—';
+
+        // CTA clicks
+        document.getElementById('b-cta-clicks').textContent = b.cta_clicks || '0';
+        document.getElementById('b-cta-ctr').textContent = b.cta_ctr > 0 ? b.cta_ctr + '%' : '—';
+        document.getElementById('b-taxa-compra').textContent = b.taxa_compra > 0 ? b.taxa_compra + '%' : '—';
+
+        // Scroll depth bars
+        const scrollLabels = { '25': '25% rolado', '50': '50% rolado', '75': '75% rolado', '100': 'Página completa' };
+        const scrollColors = { '25': '#3B82F6', '50': '#F59E0B', '75': '#F5A623', '100': '#10B981' };
+        let scrollHtml = '';
+        ['25','50','75','100'].forEach(k => {
+          const pct = b.scroll_depth_pct[k] || 0;
+          scrollHtml += `
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:130px; font-size:12px; font-weight:600; flex-shrink:0; color:var(--text-muted);">${scrollLabels[k]}</div>
+              <div style="flex:1; background:var(--bg); height:18px; border-radius:6px; overflow:hidden;">
+                <div style="width:${pct}%; background:${scrollColors[k]}; height:100%; border-radius:6px; transition:width 0.8s ease;"></div>
+              </div>
+              <div style="width:48px; text-align:right; font-size:13px; font-weight:700; color:${scrollColors[k]};">${pct}%</div>
+            </div>`;
+        });
+        document.getElementById('b-scroll-wrap').innerHTML = scrollHtml || '<div style="color:var(--text-muted); font-size:13px;">Ainda sem dados de rolagem.</div>';
+      }
     } catch(e) {
       console.error('Erro ao carregar métricas do funil:', e);
     }

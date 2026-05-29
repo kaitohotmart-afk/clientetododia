@@ -817,6 +817,54 @@
 </div>
 
 <script>
+  // ── BEHAVIORAL TRACKING ──
+  const _sid = (function() {
+    let sid = sessionStorage.getItem('_ctd_sid');
+    if (!sid) { sid = Math.random().toString(36).slice(2) + Date.now(); sessionStorage.setItem('_ctd_sid', sid); }
+    return sid;
+  })();
+  const _PAGE = 'index.html';
+  function trackEvent(event, value) {
+    fetch('/api/track-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ page: _PAGE, event, value: String(value), session_id: _sid })
+    }).catch(() => {});
+  }
+
+  // Tempo na página (envia ao sair)
+  const _startTime = Date.now();
+  window.addEventListener('beforeunload', function() {
+    const secs = Math.round((Date.now() - _startTime) / 1000);
+    trackEvent('time_on_page', secs);
+  });
+  // Também envia a cada 60s para sessões longas que não fecham o tab
+  setInterval(function() {
+    const secs = Math.round((Date.now() - _startTime) / 1000);
+    trackEvent('time_on_page', secs);
+  }, 60000);
+
+  // Scroll depth milestones (25, 50, 75, 100%)
+  const _scrollMilestones = new Set();
+  window.addEventListener('scroll', function() {
+    const scrolled = window.scrollY + window.innerHeight;
+    const total = document.documentElement.scrollHeight;
+    const pct = Math.round((scrolled / total) * 100);
+    [25, 50, 75, 100].forEach(function(m) {
+      if (pct >= m && !_scrollMilestones.has(m)) {
+        _scrollMilestones.add(m);
+        trackEvent('scroll_depth', m);
+      }
+    });
+  }, { passive: true });
+
+  // CTA Click tracking
+  document.querySelectorAll('a[href*="pay.lojou.app"]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      trackEvent('cta_click', btn.id || 'cta');
+    });
+  });
+
   // FAQ accordion
   document.querySelectorAll('.faq-q').forEach(q => {
     q.addEventListener('click', () => {
