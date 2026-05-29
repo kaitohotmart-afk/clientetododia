@@ -346,6 +346,98 @@ app.post('/api/e2payments/webhook', async (req, res) => {
     res.status(200).send('OK');
 });
 
+// ==========================================
+// INTEGRAÇÃO LOJOU (WEBHOOK)
+// ==========================================
+app.post('/api/lojou/webhook', async (req, res) => {
+    try {
+        const payload = req.body;
+        console.log('\n[LOJOU] 📨 WEBHOOK RECEBIDO:', JSON.stringify(payload, null, 2));
+
+        const orderType = payload.order_type || '';
+        const status = payload.status?.toLowerCase() || '';
+        const amount = parseFloat(payload.amount) || 0;
+        const customerEmail = payload.customer?.email || '';
+        const customerPhone = payload.customer?.mobile_number || '';
+        
+        let dbStatus = 'pending';
+        if (status === 'approved' || orderType === 'order_approved') {
+            dbStatus = 'confirmed';
+        } else if (status === 'canceled' || orderType === 'order_canceled' || status === 'failed') {
+            dbStatus = 'failed';
+        } else if (status === 'refunded' || orderType === 'order_refunded') {
+            dbStatus = 'refunded';
+        }
+
+        console.log(`[LOJOU] Status mapeado: ${status} -> ${dbStatus} (Phone: ${customerPhone})`);
+
+        if (!customerPhone && !customerEmail) {
+            console.log('[LOJOU] ❌ Sem telefone/email para rastrear a lead.');
+            return res.json({ ok: true, message: 'No customer info' });
+        }
+
+        let cleanPhone = customerPhone.replace(/\D/g, '');
+        if (cleanPhone.startsWith('258') && cleanPhone.length === 12) {
+            cleanPhone = cleanPhone.substring(3);
+        }
+
+        let query = supabase.from('leads').select('*');
+        if (cleanPhone) {
+            query = query.eq('phone', cleanPhone);
+        } else if (customerEmail) {
+            query = query.eq('email', customerEmail);
+        }
+
+        const { data: leads, error } = await query.order('timestamp', { ascending: false }).limit(1);
+
+        if (leads && leads.length > 0) {
+            const lead = leads[0];
+            console.log(`[LOJOU] Lead encontrada: ${lead.name} (${lead.phone})`);
+            
+            if (dbStatus === 'confirmed' && lead.status !== 'confirmed') {
+                await supabase.from('leads').update({
+                    status: 'confirmed',
+                    totalPaid: amount || lead.total || 297,
+                    access_sent: true
+                }).eq('id', lead.id);
+
+                console.log(`[LOJOU] ✅ Venda confirmada e guardada no Supabase!`);
+                await sendCourseAccess({ ...lead, totalPaid: amount || 297 });
+                await sendToUtmify({ ...lead, totalPaid: amount || 297 }, 'Purchase');
+            } else if (dbStatus === 'failed') {
+                await supabase.from('leads').update({
+                    status: 'failed'
+                }).eq('id', lead.id);
+            }
+        } else {
+            console.log(`[LOJOU] ⚠️ Nenhuma lead encontrada. Criando nova entrada direta...`);
+            if (dbStatus === 'confirmed') {
+                const { data: newLead } = await supabase.from('leads').insert([{
+                    ref: `LOJOU-${Date.now()}`,
+                    name: payload.customer?.name || 'Cliente Lojou',
+                    phone: cleanPhone || customerPhone,
+                    email: customerEmail,
+                    status: 'confirmed',
+                    source: 'lojou_direto',
+                    totalPaid: amount,
+                    timestamp: new Date().toISOString(),
+                    access_sent: true
+                }]).select('*').single();
+
+                if (newLead) {
+                    await sendCourseAccess(newLead);
+                    await sendToUtmify(newLead, 'Purchase');
+                }
+            }
+        }
+
+        res.json({ ok: true, received: true });
+    } catch (e) {
+        console.error('[LOJOU] ❌ ERRO no webhook:', e);
+        res.status(500).json({ error: e.message });
+    }
+});
+
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => console.log(`API a correr em http://localhost:${PORT}`));
 }
