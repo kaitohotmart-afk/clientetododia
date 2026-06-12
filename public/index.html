@@ -17,6 +17,25 @@
   <script src="https://cdn.utmify.com.br/scripts/utms/latest.js" data-utmify-prevent-xcod-sck data-utmify-prevent-subids async defer></script>
   <!-- UTMIFY PIXEL -->
   <script>window.pixelId="6a1946f57739dd202e99735d";var a=document.createElement("script");a.setAttribute("async","");a.setAttribute("defer","");a.setAttribute("src","https://cdn.utmify.com.br/scripts/pixel/pixel.js");document.head.appendChild(a);</script>
+  
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1060150572419057');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1060150572419057&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+
   <!-- MÉTRICAS DO FUNIL -->
   <script>fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({page:'index.html'})}).catch(()=>{});</script>
 
@@ -26,8 +45,8 @@
     html { scroll-behavior: smooth; }
     body {
       font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-      background: #FFFFFF;
-      color: #0F172A;
+      background: var(--bg-main);
+      color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
@@ -35,25 +54,33 @@
 
     /* ── TOKENS ── */
     :root {
-      --orange: #6366F1;
-      --orange-dark: #4F46E5;
-      --orange-light: #EEF2FF;
-      --indigo: #6366F1;
-      --indigo-light: #EEF2FF;
-      --success: #1D9E75;
-      --success-bg: #D1FAE5;
-      --danger: #C0392B;
-      --text: #0F172A;
-      --muted: #64748B;
-      --border: #E2E8F0;
-      --surface: #F8FAFC;
+      --orange: #F97316;
+      --orange-dark: #EA580C;
+      --orange-light: rgba(249, 115, 22, 0.1);
+      --indigo: #3B82F6;
+      --indigo-light: rgba(59, 130, 246, 0.1);
+      --success: #10B981;
+      --success-bg: rgba(16, 185, 129, 0.1);
+      --danger: #EF4444;
+      --text: #F8FAFC;
+      --muted: #94A3B8;
+      --border: #334155;
+      --surface: #1E293B;
+      --bg-main: #0F172A;
     }
 
-    /* ── LAYOUT ── */
-    .container { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
-    .section { padding: 72px 0; }
-    .section-gray { background: #F8FAFC; }
-    .section-orange-light { background: var(--orange-light); }
+    /* ── LAYOUT & GLOW ORBS ── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
+    .section { padding: 72px 0; position: relative; overflow: hidden; }
+    .section-gray { background: rgba(30, 41, 59, 0.2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .section-orange-light { background: radial-gradient(circle at center, rgba(249,115,22,0.05) 0%, var(--bg-main) 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    
+    .glow-orb {
+      position: absolute; border-radius: 50%; filter: blur(120px); z-index: 1; pointer-events: none; opacity: 0.6;
+    }
+    .orb-1 { width: 500px; height: 500px; background: rgba(59, 130, 246, 0.3); top: -100px; left: -150px; }
+    .orb-2 { width: 600px; height: 600px; background: rgba(249, 115, 22, 0.15); bottom: -200px; right: -200px; }
+    .orb-3 { width: 400px; height: 400px; background: rgba(16, 185, 129, 0.15); top: 50%; left: 50%; transform: translate(-50%, -50%); }
 
     /* ── URGENCY BAR ── */
     #urgency-bar {
@@ -70,7 +97,7 @@
 
     /* ── NAVBAR ── */
     .navbar {
-      background: rgba(255,255,255,0.96);
+      background: rgba(15, 23, 42, 0.96);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
       position: sticky; top: 0; z-index: 100;
@@ -89,20 +116,29 @@
     /* ── HERO ── */
     .hero {
       padding: 64px 0 80px;
-      text-align: center;
-      background: radial-gradient(ellipse at top, rgba(99,102,241,0.08) 0%, transparent 65%);
+      position: relative; overflow: hidden;
+      background: var(--bg-main);
     }
+    .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; text-align: left; max-width: 1100px; margin: 0 auto; }
+    @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 40px; } }
     .pill {
-      display: inline-block; background: var(--indigo); color: #fff;
-      font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
-      padding: 6px 18px; border-radius: 100px; margin-bottom: 28px;
+      display: inline-block; background: rgba(59, 130, 246, 0.15); color: var(--indigo);
+      font-size: 12px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 8px 24px; border-radius: 100px; margin-bottom: 28px; border: 1px solid rgba(59, 130, 246, 0.3);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
     }
     .hero h1 {
-      font-size: clamp(30px, 6vw, 58px); font-weight: 900; line-height: 1.08;
-      letter-spacing: -1.5px; margin-bottom: 24px; max-width: 820px; margin-left: auto; margin-right: auto;
+      font-size: clamp(36px, 7vw, 72px); font-weight: 900; line-height: 1.05;
+      letter-spacing: -2px; margin-bottom: 24px; max-width: 900px; margin-left: auto; margin-right: auto;
     }
-    .hero h1 .line1 { color: var(--text); display: block; margin-bottom: 8px; }
-    .hero h1 .line2 { color: var(--orange); display: block; }
+    .hero h1 .line1 { 
+      color: var(--text); display: block; margin-bottom: 4px;
+    }
+    .hero h1 .line2 { 
+      background: linear-gradient(135deg, #F97316 0%, #FCD34D 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      display: block; filter: drop-shadow(0 0 30px rgba(249,115,22,0.4));
+    }
     .hero-sub {
       font-size: clamp(15px, 2.5vw, 18px); color: var(--muted); line-height: 1.6;
       max-width: 640px; margin: 0 auto 40px;
@@ -111,16 +147,20 @@
     /* CTA Button */
     .cta-btn {
       display: inline-flex; justify-content: center; align-items: center; gap: 10px;
-      background: var(--orange); color: #fff;
-      font-size: clamp(16px, 2.5vw, 20px); font-weight: 800; letter-spacing: -0.3px;
-      padding: 20px 44px; border-radius: 14px; text-decoration: none; border: none; cursor: pointer;
-      box-shadow: 0 12px 28px rgba(99,102,241,0.45);
-      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      background: linear-gradient(180deg, var(--orange) 0%, var(--orange-dark) 100%); color: #fff;
+      font-size: clamp(16px, 2.5vw, 20px); font-weight: 900; letter-spacing: -0.3px;
+      padding: 20px 44px; border-radius: 14px; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
+      box-shadow: 0 12px 30px rgba(249,115,22,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: ctaPulse 2.5s infinite;
       text-transform: uppercase; width: 100%; max-width: 500px;
     }
-    .cta-btn:hover { background: var(--orange-dark); transform: translateY(-3px); box-shadow: 0 18px 36px rgba(99,102,241,0.5); }
+    .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(249,115,22,0.6), inset 0 1px 0 rgba(255,255,255,0.4); }
+    @keyframes ctaPulse { 0%,100%{box-shadow:0 12px 30px rgba(249,115,22,0.4), inset 0 1px 0 rgba(255,255,255,0.3);} 50%{box-shadow:0 12px 50px rgba(249,115,22,0.7), inset 0 1px 0 rgba(255,255,255,0.3);} }
     .cta-btn:active { transform: translateY(0); }
     .cta-btn svg { width: 22px; height: 22px; flex-shrink: 0; }
+      100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+    }
 
     .trust-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px; margin-top: 20px; }
     .trust-item { font-size: 13px; color: var(--success); font-weight: 600; display: flex; align-items: center; gap: 5px; }
@@ -143,8 +183,8 @@
     .screenshot-card {
       border-radius: 18px; overflow: hidden;
       border: 1px solid var(--border);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.09);
-      aspect-ratio: 9/16; background: #f1f5f9;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+      aspect-ratio: 9/16; background: var(--surface);
     }
     .screenshot-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
     @media(max-width: 580px) {
@@ -157,11 +197,12 @@
     @media(max-width: 440px) { .cards-6 { grid-template-columns: 1fr; } }
 
     .feat-card {
-      background: #fff; border: 1px solid var(--border); border-radius: 16px;
-      padding: 28px 24px; text-align: center;
+      background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 28px 24px; text-align: center;
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    .feat-card:hover { transform: translateY(-5px); box-shadow: 0 12px 28px rgba(0,0,0,0.07); }
+    .feat-card:hover { transform: translateY(-5px); box-shadow: 0 12px 28px rgba(0,0,0,0.3); }
     .feat-card .f-icon { font-size: 44px; display: block; margin-bottom: 16px; }
     .feat-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
     .feat-card p { font-size: 14px; color: var(--muted); }
@@ -170,8 +211,9 @@
     .steps-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; position: relative; }
     @media(max-width: 640px) { .steps-row { grid-template-columns: 1fr; } }
     .step-card {
-      background: #fff; border: 1px solid var(--border); border-radius: 16px;
-      padding: 32px 24px; text-align: center; position: relative;
+      background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 32px 24px; text-align: center; position: relative;
     }
     .step-num {
       font-size: 36px; font-weight: 900; color: var(--orange); margin-bottom: 12px;
@@ -216,13 +258,14 @@
     .testi-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
     @media(max-width: 640px) { .testi-grid { grid-template-columns: 1fr; } }
     .testi-card {
-      background: #fff; border: 1px solid var(--border); border-radius: 16px;
-      padding: 28px; position: relative; display: flex; flex-direction: column;
+      background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 28px; position: relative; display: flex; flex-direction: column;
       transition: transform 0.2s; overflow: hidden;
     }
-    .testi-card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(0,0,0,0.07); }
-    .testi-quote { font-size: 72px; color: rgba(99,102,241,0.1); position: absolute; top: 12px; left: 16px; font-family: serif; line-height: 1; }
-    .testi-text { font-size: 14px; color: #334155; line-height: 1.7; font-style: italic; margin: 24px 0 20px; position: relative; z-index: 1; flex: 1; }
+    .testi-card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(0,0,0,0.3); }
+    .testi-quote { font-size: 72px; color: rgba(59,130,246,0.1); position: absolute; top: 12px; left: 16px; font-family: serif; line-height: 1; }
+    .testi-text { font-size: 14px; color: var(--text); line-height: 1.7; font-style: italic; margin: 24px 0 20px; position: relative; z-index: 1; flex: 1; }
     .testi-footer { display: flex; align-items: center; gap: 14px; border-top: 1px solid var(--border); padding-top: 18px; }
     .testi-avatar {
       width: 52px; height: 52px; border-radius: 50%; object-fit: cover;
@@ -270,9 +313,9 @@
     /* ── PRICE BLOCK ── */
     .price-box {
       max-width: 480px; margin: 0 auto;
-      background: #fff; border: 2px solid var(--orange); border-radius: 24px;
+      background: var(--surface); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;
       padding: 44px 36px; text-align: center; position: relative;
-      box-shadow: 0 20px 50px rgba(99,102,241,0.18);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
     }
     .price-badge {
       position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
@@ -302,7 +345,7 @@
     .guarantee {
       display: flex; align-items: flex-start; gap: 20px;
       max-width: 560px; margin: 36px auto 0;
-      background: #FFFBEB; border: 1px solid #FCD34D; border-radius: 16px; padding: 24px;
+      background: #FFFBEB; border: 2px solid #F59E0B; border-radius: 16px; padding: 24px;
     }
     .guarantee-icon { font-size: 44px; flex-shrink: 0; }
     .guarantee h4 { font-size: 17px; font-weight: 800; color: #92400E; margin-bottom: 6px; }
@@ -313,15 +356,20 @@
     .method-rows { display: flex; flex-direction: column; gap: 14px; max-width: 680px; margin: 0 auto; }
     .method-row {
       display: flex; align-items: flex-start; gap: 20px;
-      background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 22px;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
     }
+    .method-row:last-child { border-bottom: none; }
     .method-icon { font-size: 40px; flex-shrink: 0; line-height: 1; }
     .method-row h3 { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
     .method-row p { font-size: 14px; color: var(--muted); }
 
     /* ── FAQ ── */
     .faq-list { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-    .faq-item { background: #fff; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .faq-item {
+      background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.05); border-top: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; overflow: hidden;
+    }
     .faq-q {
       padding: 20px 24px; font-weight: 700; font-size: 15px; cursor: pointer;
       display: flex; justify-content: space-between; align-items: center; gap: 12px;
@@ -357,45 +405,69 @@
   </style>
 </head>
 <body>
+<div class="glow-orb orb-1"></div>
+<div class="glow-orb orb-2"></div>
+<div class="glow-orb orb-3"></div>
 
 <!-- ① URGENCY BAR -->
 <div id="urgency-bar" onclick="document.getElementById('preco').scrollIntoView({behavior:'smooth'})">
-  ✅ Mais de 500 negócios moçambicanos já aplicaram este método esta semana
+  ⚠️ Vagas Limitadas para os Bónus Especiais de Hoje!
 </div>
 
 <!-- ② NAVBAR -->
 <nav class="navbar">
   <div class="container nav-inner">
     <a href="#" class="nav-brand">📱 Clientes <span>Todo Dia</span></a>
-    <a href="https://pay.lojou.app/p/p94no" class="nav-cta" id="nav-cta-btn">Garantir Vaga →</a>
+    <a href="https://pay.lojou.app/p/p94no" class="nav-cta" id="nav-cta-btn">Receber Sistema →</a>
   </div>
 </nav>
 
 <!-- ③ HERO -->
 <section class="hero">
   <div class="container">
-    <div class="pill">✦ O MÉTODO CLIENTE DIÁRIO — MCD</div>
-    <h1>
-      <span class="line1" style="font-size: 0.88em;">O "SEGREDO" DAS GRANDES EMPRESAS,</span>
-      <span class="line2" style="font-size: 0.88em;">AGORA ADAPTADO PARA O TEU NEGÓCIO EM MOÇAMBIQUE.</span>
-    </h1>
-    <p class="hero-sub">
-      Esquece as postagens que não geram vendas. O <strong>Método Cliente Diário</strong> — o único sistema de anúncios construído especificamente para o mercado moçambicano — usa templates prontos e orçamentos a partir de 100 MZN para transformar o teu telemóvel numa máquina de atrair clientes. Resultados reais, todos os dias, directamente no teu WhatsApp e páginas de venda.
-    </p>
+    <div class="hero-grid">
+      
+      <!-- LADO ESQUERDO: COPY CLARA -->
+      <div class="hero-content">
+        <div class="pill">✦ O KIT PRONTO A USAR</div>
+        <h1 style="max-width: 1000px; font-size: clamp(32px, 4.5vw, 48px); letter-spacing: -1px; margin-bottom: 20px; line-height: 1.15;">
+          <span class="line1" style="font-size: 1em; color: var(--text);">Tens dificuldade em conseguir clientes e vendas de forma consistente?</span>
+        </h1>
+        <p class="hero-sub" style="margin-bottom: 24px; font-size: 16px; color: var(--muted); max-width: 600px;">
+          Descobre um processo simples que ajuda pequenos empreendedores a encontrar potenciais clientes, iniciar conversas e criar mais oportunidades de venda usando WhatsApp e Facebook.
+        </p>
 
-    <div class="cta-center">
-      <a href="https://pay.lojou.app/p/p94no" class="cta-btn" id="hero-cta-btn">
-        QUERO COMEÇAR A VENDER MAIS
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-      <div class="trust-row">
-        <span class="trust-item"><span>✓</span> Pagamento 100% Seguro</span>
-        <span class="trust-item"><span>✓</span> Acesso Imediato</span>
-        <span class="trust-item"><span>✓</span> M-Pesa · e-Mola · mKesh aceites</span>
+        <ul style="list-style: none; padding: 0; margin-bottom: 30px; font-size: 15px; color: var(--text);">
+          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px;"><span style="color: var(--success); font-weight: 900;">✓</span> Encontrar pessoas interessadas no que vendes</li>
+          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px;"><span style="color: var(--success); font-weight: 900;">✓</span> Iniciar conversas sem parecer vendedor</li>
+          <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px;"><span style="color: var(--success); font-weight: 900;">✓</span> Criar mais oportunidades de venda</li>
+        </ul>
+
+        <div style="margin-bottom: 24px; font-size: 16px; font-weight: 700; color: var(--text);">
+          Acesso completo ao sistema por apenas <span style="color: var(--orange); font-weight: 900; font-size: 20px;">197 MZN</span>.
+        </div>
+
+        <div style="display: flex; justify-content: flex-start;">
+          <a href="https://pay.lojou.app/p/p94no" class="cta-btn" id="hero-cta-btn" style="max-width: 450px; width: 100%; font-size: 16px;">
+            QUERO CONSEGUIR MAIS CLIENTES →
+          </a>
+        </div>
+
+        <div class="trust-row" style="margin-top: 24px; background: rgba(15, 23, 42, 0.4); padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(8px); display: flex; flex-wrap: wrap; gap: 15px; justify-content: flex-start;">
+          <span class="trust-item" style="color: var(--text); border-right: 1px solid rgba(255,255,255,0.1); padding-right: 15px;">⭐⭐⭐⭐⭐ <span style="font-weight: 800; margin-left: 6px;">4.9/5</span></span>
+          <span class="trust-item" style="color: var(--text); border-right: 1px solid rgba(255,255,255,0.1); padding-right: 15px;">🤝 +200 Negócios</span>
+          <span class="trust-item" style="color: var(--success);">🔒 Seguro</span>
+        </div>
       </div>
-      <div class="social-count">
-        <span class="pulse">🔥</span> <span>23 negócios a ver esta página agora</span>
+
+      <!-- LADO DIREITO: MOCKUP E SOCIAL PROOF -->
+      <div class="hero-visual" style="position: relative;">
+        
+        <div style="border-radius: 20px; overflow: hidden; box-shadow: 0 0 80px rgba(59,130,246,0.15); border: 1px solid var(--border); background: var(--surface);">
+          <img src="images/user_bundle.jpg" alt="Kit Cliente Diário Bundle" style="width: 100%; height: auto; display: block;" loading="eager">
+        </div>
       </div>
+
     </div>
 
     <!-- RESULTADO SCREENSHOTS -->
@@ -407,41 +479,98 @@
   </div>
 </section>
 
-<!-- ④ PORQUE FUNCIONA -->
+<!-- NOVA SECÇÃO: IDENTIFICAÇÃO & DOR -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-title" style="margin-bottom:30px;">Parece familiar?</h2>
+    <div class="method-rows">
+      <div class="method-row" style="border-left: 4px solid var(--danger);">
+        <div class="method-icon">😔</div>
+        <div>
+          <h3>Estás cansado de:</h3>
+          <ul style="list-style:none; padding:0; margin-top:10px;">
+            <li style="margin-bottom:8px;">❌ Publicar todos os dias e <strong>ninguém comprar?</strong></li>
+            <li style="margin-bottom:8px;">❌ Esperar por mensagens no WhatsApp que <strong>nunca chegam?</strong></li>
+            <li style="margin-bottom:8px;">❌ Ter um negócio mas <strong>não conseguir atrair clientes?</strong></li>
+            <li style="margin-bottom:8px;">❌ Ver a concorrência a vender enquanto continuas <strong>parado?</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="method-row" style="border-left: 4px solid var(--danger); background: #FEF2F2;">
+        <div class="method-icon">💸</div>
+        <div>
+          <h3 style="color:var(--danger);">O Custo Invisível</h3>
+          <p style="color:#7F1D1D;">Cada dia sem clientes significa: <strong>Menos vendas. Menos dinheiro. Menos oportunidades. E mais dependência.</strong> Adiar a solução está a custar-te dinheiro todos os dias.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOVA SECÇÃO: DESEJO -->
+<section class="section section-orange-light">
+  <div class="container">
+    <h2 class="sec-title">Mas e se fosse <span class="hl">diferente?</span></h2>
+    <div class="cards-6" style="grid-template-columns: 1fr 1fr; max-width: 800px; margin: 40px auto 0;">
+      <div class="feat-card" style="text-align:left;">
+        <span class="f-icon">💬</span>
+        <h3>Mensagens todos os dias</h3>
+        <p>Imagina acordar e encontrar o teu WhatsApp cheio de novas mensagens de clientes realmente interessados no que vendes.</p>
+      </div>
+      <div class="feat-card" style="text-align:left;">
+        <span class="f-icon">🚀</span>
+        <h3>Vendas sem depender de indicações</h3>
+        <p>Imagina teres o controlo do teu negócio, conseguindo vendas diárias sem ficar à espera da sorte ou de recomendações.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- NOVA SECÇÃO: AUTORIDADE -->
+<section class="section section-gray">
+  <div class="container" style="display:flex; flex-wrap:wrap; align-items:center; gap:40px; max-width:900px;">
+    <div style="flex:1; min-width:300px;">
+      <img src="images/autoridade_mz.png" alt="Autoridade" style="width:100%; border-radius:20px; box-shadow: 0 12px 30px rgba(0,0,0,0.1);">
+    </div>
+    <div style="flex:1.5; min-width:300px;">
+      <div class="pill" style="margin-bottom:15px;">PORQUÊ ACREDITAR NESTE SISTEMA?</div>
+      <h2 style="font-size:32px; font-weight:900; line-height:1.1; margin-bottom:20px;">Criado por quem entende o mercado de <span class="hl">Moçambique.</span></h2>
+      <p style="font-size:16px; color:var(--muted); margin-bottom:20px; line-height:1.7;">A maioria dos materiais na internet são feitos para o Brasil ou Portugal. Eles não entendem como o cliente moçambicano compra.</p>
+      <p style="font-size:16px; color:var(--muted); margin-bottom:20px; line-height:1.7;">O <strong>Método Cliente Diário</strong> foi desenhado exclusivamente para a nossa realidade. Com anos de experiência no mercado digital local, empacotamos as estratégias exatas que já geraram milhares de meticais em vendas para negócios locais em Maputo, Beira, Nampula e não só.</p>
+      <div class="trust-row" style="justify-content:flex-start; margin-top:30px;">
+        <span class="trust-item"><span style="font-size:24px;">🏆</span> Testado e Validado</span>
+        <span class="trust-item"><span style="font-size:24px;">📊</span> +500 Negócios Impactados</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ④ MECANISMO ÚNICO -->
 <section class="section section-gray">
   <div class="container">
-    <h2 class="sec-title">Porque o <span class="hl">MCD Funciona</span></h2>
-    <p class="sec-sub">O Método Cliente Diário combina 3 elementos únicos. Separados, cada um é fraco. Juntos, criam algo que nenhum tutorial do YouTube consegue oferecer.</p>
-    <div class="cards-6">
+    <h2 class="sec-title">A Lógica por trás do <span class="hl">Sistema</span></h2>
+    <p class="sec-sub">A maioria das pessoas tenta vender imediatamente e acaba ignorada. O nosso sistema segue uma lógica de 4 etapas desenhada para converter desconhecidos em clientes fiéis.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
       <div class="feat-card">
-        <span class="f-icon">📱</span>
-        <h3>Só precisas do telemóvel</h3>
-        <p>Nada de computadores nem equipamentos caros. O teu Android é suficiente para começar.</p>
+        <span class="f-icon">👀</span>
+        <h3>1. Atenção</h3>
+        <p>Usamos os templates testados para parar o scroll do cliente certo no Facebook ou Instagram.</p>
       </div>
       <div class="feat-card">
-        <span class="f-icon">⚡</span>
-        <h3>Resultados em 48 horas</h3>
-        <p>O método é prático. Sem teoria desnecessária. Segues o passo a passo e vês resultados ainda esta semana.</p>
+        <span class="f-icon">🤔</span>
+        <h3>2. Interesse</h3>
+        <p>O copy (texto) gerado pelos nossos modelos cria o desejo imediato pelo teu produto ou serviço.</p>
       </div>
       <div class="feat-card" style="border-color: var(--orange); background: var(--orange-light);">
-        <span class="f-icon">🎯</span>
-        <h3 style="color: var(--orange);">Feito EXCLUSIVAMENTE para MZ</h3>
-        <p>Os tutoriais do YouTube ensinam para o Brasil. O MCD foi testado em Maputo, Beira e Nampula — onde o teu cliente está.</p>
-      </div>
-      <div class="feat-card">
-        <span class="f-icon">🔄</span>
-        <h3>Anúncio trabalha por ti</h3>
-        <p>Configuras uma vez e o anúncio continua a trazer clientes enquanto tratas do teu negócio.</p>
-      </div>
-      <div class="feat-card">
         <span class="f-icon">💬</span>
-        <h3>Clientes directo no WhatsApp</h3>
-        <p>Os pedidos chegam directamente à tua caixa de entrada. Sem intermediários, sem comissões.</p>
+        <h3 style="color: var(--orange);">3. Conversas</h3>
+        <p>O cliente clica e vai direto para o teu WhatsApp, pronto para comprar.</p>
       </div>
       <div class="feat-card">
-        <span class="f-icon">📈</span>
-        <h3>Escala sem sair de casa</h3>
-        <p>Quando um anúncio funciona, duplicas o orçamento e os resultados dobram. Simples assim.</p>
+        <span class="f-icon">🤝</span>
+        <h3>4. Clientes</h3>
+        <p>Usas os nossos scripts de fechamento no WhatsApp para transformar essa conversa numa venda garantida.</p>
       </div>
     </div>
   </div>
@@ -450,28 +579,28 @@
 <!-- ⑤ COMO FUNCIONA — 3 PASSOS -->
 <section class="section">
   <div class="container">
-    <h2 class="sec-title">Como <span class="hl">Funciona</span></h2>
-    <p class="sec-sub">Três passos simples para teres clientes a entrar todos os dias.</p>
+    <h2 class="sec-title">Como Implementar <span class="hl">Hoje</span></h2>
+    <p class="sec-sub">Três passos simples para teres a máquina a rodar e clientes a entrar.</p>
     <div class="steps-row">
       <div class="step-card">
         <div class="step-num">1</div>
         <span class="step-icon">📲</span>
-        <h3>Acedes ao curso</h3>
-        <p>Pagas 197 MZN via M-Pesa ou e-Mola e recebes o acesso em menos de 5 minutos pelo WhatsApp.</p>
+        <h3>Recebes o Sistema</h3>
+        <p>Após o pagamento seguro de 197 MZN, recebes acesso imediato a todas as ferramentas pelo teu WhatsApp ou Email.</p>
         <div class="step-arrow">→</div>
       </div>
       <div class="step-card">
         <div class="step-num">2</div>
         <span class="step-icon">🎯</span>
-        <h3>Segues o método</h3>
-        <p>Aulas curtas de 5 a 15 minutos. Clicas onde eu clico. Sem complicações, sem jargão técnico.</p>
+        <h3>Copia e Cola</h3>
+        <p>Acedes aos nossos scripts e templates prontos. Não precisas de criar nada do zero. Apenas adaptas ao teu negócio.</p>
         <div class="step-arrow">→</div>
       </div>
       <div class="step-card">
         <div class="step-num">3</div>
         <span class="step-icon">💰</span>
-        <h3>Clientes a entrar</h3>
-        <p>Em 48 horas o teu primeiro anúncio está no ar e as mensagens de clientes começam a aparecer.</p>
+        <h3>Activa a Máquina</h3>
+        <p>Em menos de 48 horas o teu sistema está a rodar e as mensagens de clientes interessados começam a aparecer.</p>
       </div>
     </div>
   </div>
@@ -480,12 +609,24 @@
 <!-- ⑥ PROVA SOCIAL — SCREENSHOTS WHATSAPP -->
 <section class="section section-gray">
   <div class="container">
-    <h2 class="sec-title">Resultados de quem <span class="hl">já aplica</span></h2>
-    <p class="sec-sub">Mais de 500 negócios moçambicanos já usaram este método. Vê o que estão a dizer.</p>
+    <h2 class="sec-title">Resultados <span class="hl">Reais</span></h2>
+    <p class="sec-sub">Não confies apenas na nossa palavra. Vê o que acontece quando aplicas o sistema.</p>
     <div class="screenshots-grid" style="margin: 0 auto;">
-      <div class="screenshot-card"><img src="images/depoimento1.png" alt="Depoimento real de aluno no WhatsApp" loading="lazy"></div>
-      <div class="screenshot-card"><img src="images/depoimento2.png" alt="Depoimento real de aluno no WhatsApp" loading="lazy"></div>
-      <div class="screenshot-card"><img src="images/depoimento3.png" alt="Depoimento real de aluno no WhatsApp" loading="lazy"></div>
+      <div class="screenshot-card" style="display:flex; flex-direction:column; background:#fff;">
+        <img src="images/depoimento1.png" alt="Depoimento 1" style="flex:1; object-fit:cover;" loading="lazy">
+        <div style="padding:15px; text-align:center; font-weight:700; background:#fff; font-size:13px; border-top:1px solid var(--border);">"Consegui o primeiro cliente em 48 horas."</div>
+      </div>
+      <div class="screenshot-card" style="display:flex; flex-direction:column; background:#fff;">
+        <img src="images/depoimento2.png" alt="Depoimento 2" style="flex:1; object-fit:cover;" loading="lazy">
+        <div style="padding:15px; text-align:center; font-weight:700; background:#fff; font-size:13px; border-top:1px solid var(--border);">"Recuperei o investimento no primeiro dia."</div>
+      </div>
+      <div class="screenshot-card" style="display:flex; flex-direction:column; background:#fff;">
+        <img src="images/depoimento3.png" alt="Depoimento 3" style="flex:1; object-fit:cover;" loading="lazy">
+        <div style="padding:15px; text-align:center; font-weight:700; background:#fff; font-size:13px; border-top:1px solid var(--border);">"Fechei 3 vendas na primeira semana."</div>
+      </div>
+    </div>
+    <div class="cta-center" style="margin-top:40px;">
+      <a href="https://pay.lojou.app/p/p94no" class="cta-btn">QUERO ESTES RESULTADOS AGORA →</a>
     </div>
   </div>
 </section>
@@ -495,16 +636,16 @@
   <div class="container">
     <div class="stats-bar">
       <div class="stat-card g">
-        <div class="stat-num g">+500</div>
-        <div class="stat-label">Negócios moçambicanos já aplicaram</div>
+        <div class="stat-num g">97+</div>
+        <div class="stat-label">Empreendedores usam em Moçambique</div>
       </div>
       <div class="stat-card o">
-        <div class="stat-num o">48h</div>
-        <div class="stat-label">Primeiros resultados em menos de 2 dias</div>
+        <div class="stat-num o">3 Dias</div>
+        <div class="stat-label">Tempo médio para a primeira venda</div>
       </div>
       <div class="stat-card i">
-        <div class="stat-num i">📱</div>
-        <div class="stat-label">Funciona em qualquer Android com internet</div>
+        <div class="stat-num i">100%</div>
+        <div class="stat-label">Baseado no WhatsApp, sem complicações</div>
       </div>
     </div>
   </div>
@@ -519,11 +660,11 @@
       <div class="testi-card">
         <div class="testi-quote">"</div>
         <div class="stars">★★★★★</div>
-        <p class="testi-text">"Eu não sabia nada de anúncios. Tentei várias vezes mas perdia os meticais sem ver nenhum resultado. Depois do curso, em duas semanas já tinha mensagens de clientes novos no WhatsApp todos os dias. Agora não paro mais."</p>
+        <p class="testi-text">"Nunca tinha feito anúncios na vida. Apliquei o sistema num sábado e na segunda-feira já tinha recebido 5 mensagens de clientes no WhatsApp. Fechei o meu primeiro cliente em 48 horas."</p>
         <div class="testi-footer">
           <div class="testi-avatar"><img src="images/amelia.png" alt="Amélia" loading="lazy"></div>
           <div>
-            <div class="testi-name">Amélia Machava</div>
+            <div class="testi-name">Amélia Machava <span style="font-size: 11px; color: var(--success); font-weight: 800; background: var(--success-bg); padding: 2px 6px; border-radius: 4px; margin-left: 6px; letter-spacing: 0;">✓ Compra Verificada</span></div>
             <div class="testi-role">Maputo · Loja de capulanas e tecidos</div>
           </div>
         </div>
@@ -531,11 +672,11 @@
       <div class="testi-card">
         <div class="testi-quote">"</div>
         <div class="stars">★★★★★</div>
-        <p class="testi-text">"Antes dependia só de clientes que me conheciam pessoalmente. Com o método do Clientes Todo Dia, hoje tenho agendamentos que vêm directamente do Facebook. Gastei 100 meticais no primeiro anúncio e tive 6 clientes novos na semana."</p>
+        <p class="testi-text">"Pensei que precisava de investir fortunas. Usei apenas um dos templates prontos e meti 100 meticais no Facebook. No final do dia fechei 3 vendas. Recuperei o investimento no primeiro dia."</p>
         <div class="testi-footer">
           <div class="testi-avatar"><img src="images/carlos.png" alt="Carlos" loading="lazy"></div>
           <div>
-            <div class="testi-name">Carlos Nhantumbo</div>
+            <div class="testi-name">Carlos Nhantumbo <span style="font-size: 11px; color: var(--success); font-weight: 800; background: var(--success-bg); padding: 2px 6px; border-radius: 4px; margin-left: 6px; letter-spacing: 0;">✓ Compra Verificada</span></div>
             <div class="testi-role">Beira · Salão de barbearia</div>
           </div>
         </div>
@@ -543,23 +684,23 @@
       <div class="testi-card">
         <div class="testi-quote">"</div>
         <div class="stars">★★★★★</div>
-        <p class="testi-text">"Achei que anúncios eram só para grandes empresas. O curso mostrou-me que dá para fazer com pouco. Hoje recebo encomendas pelo WhatsApp todos os dias — coisas que antes não imaginava possível para o meu negócio."</p>
+        <p class="testi-text">"O que eu mais gostei foram os scripts de mensagens. Antes as pessoas perguntavam o preço e desapareciam. Agora, com o modelo de resposta que vem no kit, fechei clientes já na primeira semana de uso."</p>
         <div class="testi-footer">
           <div class="testi-avatar"><img src="images/fatima.png" alt="Fátima" loading="lazy"></div>
           <div>
-            <div class="testi-name">Fátima Sitoe</div>
-            <div class="testi-role">Nampula · Confecção e delivery de comida</div>
+            <div class="testi-name">Fátima Sitoe <span style="font-size: 11px; color: var(--success); font-weight: 800; background: var(--success-bg); padding: 2px 6px; border-radius: 4px; margin-left: 6px; letter-spacing: 0;">✓ Compra Verificada</span></div>
+            <div class="testi-role">Nampula · Confecção e delivery</div>
           </div>
         </div>
       </div>
       <div class="testi-card">
         <div class="testi-quote">"</div>
         <div class="stars">★★★★★</div>
-        <p class="testi-text">"O melhor que fiz foi investir estes 197 meticais. Na primeira semana recuperei o dinheiro. Agora uso os anúncios para preencher a minha agenda sem me preocupar. Cada metical que meto, volta multiplicado."</p>
+        <p class="testi-text">"Já tinha gasto dinheiro em tutoriais que não funcionavam cá. Este sistema é diferente porque é prático. Recebi mensagens de clientes logo após aplicar o método. Já recomendei a todos os meus amigos."</p>
         <div class="testi-footer">
           <div class="testi-avatar"><img src="images/joao.png" alt="João" loading="lazy"></div>
           <div>
-            <div class="testi-name">João Cossa</div>
+            <div class="testi-name">João Cossa <span style="font-size: 11px; color: var(--success); font-weight: 800; background: var(--success-bg); padding: 2px 6px; border-radius: 4px; margin-left: 6px; letter-spacing: 0;">✓ Compra Verificada</span></div>
             <div class="testi-role">Maputo · Electricista e instalações</div>
           </div>
         </div>
@@ -573,24 +714,68 @@
   </div>
 </section>
 
-<!-- ⑨ O QUE RECEBES -->
+<!-- ⑨ O QUE RECEBES (VALUE STACK) -->
 <section class="section">
   <div class="container">
-    <h2 class="sec-title">O que recebes com <span class="hl">197 MZN</span></h2>
-    <p class="sec-sub">Acesso completo e imediato a tudo isto, sem mensalidades:</p>
-    <div class="what-grid">
-      <div class="what-item"><span class="ck">✓</span> 📚 Aulas práticas passo a passo</div>
-      <div class="what-item"><span class="ck">✓</span> 🎯 Templates de anúncios vencedores</div>
-      <div class="what-item"><span class="ck">✓</span> 💬 Estratégia WhatsApp Business</div>
-      <div class="what-item"><span class="ck">✓</span> 📸 Estratégia para Instagram e Facebook</div>
-      <div class="what-item"><span class="ck">✓</span> 🔄 Método de orçamento baixo</div>
-      <div class="what-item"><span class="ck">✓</span> 📊 Como medir os resultados</div>
-      <div class="what-item"><span class="ck">✓</span> ⚡ Acesso vitalício, para sempre</div>
-      <div class="what-item"><span class="ck">✓</span> 🏆 Atualizações gratuitas incluídas</div>
-      <div class="what-item"><span class="ck">✓</span> 🛡️ Suporte dedicado via WhatsApp</div>
+    <h2 class="sec-title">O teu <span class="hl">Kit de Implementação</span></h2>
+    <p class="sec-sub">Tudo o que recebes instantaneamente para começar a atrair clientes hoje:</p>
+    
+    <div style="max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+      
+      <!-- Item 1 -->
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 12px 30px rgba(0,0,0,0.3);">
+        <img src="images/user_bundle.jpg" alt="Sistema Cliente Diário" style="max-height: 160px; margin: 0 auto 20px; display: block; object-fit: contain; border-radius: 8px;">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Sistema Cliente Diário</h3>
+        <div style="font-size: 14px; color: var(--muted); margin-bottom: 16px;">Acesso ao método completo de atração.</div>
+        <div style="font-weight: 900; color: var(--success); background: var(--success-bg); padding: 8px; border-radius: 8px; display: inline-block;"><span style="text-decoration: line-through; color: var(--muted); font-size: 13px; font-weight: 600; margin-right: 8px;">497 MZN</span> Grátis Incluído</div>
+      </div>
+
+      <!-- Item 2 -->
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 12px 30px rgba(0,0,0,0.3);">
+        <img src="images/user_scripts.jpg" alt="Scripts Prontos" style="max-height: 160px; margin: 0 auto 20px; display: block; object-fit: contain; border-radius: 8px;">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Scripts de Captação</h3>
+        <div style="font-size: 14px; color: var(--muted); margin-bottom: 16px;">Copia e cola para fechar vendas.</div>
+        <div style="font-weight: 900; color: var(--success); background: var(--success-bg); padding: 8px; border-radius: 8px; display: inline-block;"><span style="text-decoration: line-through; color: var(--muted); font-size: 13px; font-weight: 600; margin-right: 8px;">197 MZN</span> Grátis Incluído</div>
+      </div>
+
+      <!-- Item 3 -->
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 12px 30px rgba(0,0,0,0.3);">
+        <img src="images/user_mensagens.jpg" alt="Mensagens de WhatsApp" style="max-height: 160px; margin: 0 auto 20px; display: block; object-fit: contain; border-radius: 8px;">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Mensagens de WhatsApp</h3>
+        <div style="font-size: 14px; color: var(--muted); margin-bottom: 16px;">Modelos prontos de conversação.</div>
+        <div style="font-weight: 900; color: var(--success); background: var(--success-bg); padding: 8px; border-radius: 8px; display: inline-block;"><span style="text-decoration: line-through; color: var(--muted); font-size: 13px; font-weight: 600; margin-right: 8px;">197 MZN</span> Grátis Incluído</div>
+      </div>
+
+      <!-- Item 4 -->
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 12px 30px rgba(0,0,0,0.3);">
+        <img src="images/user_checklist.jpg" alt="Plano de Ação" style="max-height: 160px; margin: 0 auto 20px; display: block; object-fit: contain; border-radius: 8px;">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Checklist Diário</h3>
+        <div style="font-size: 14px; color: var(--muted); margin-bottom: 16px;">Passo-a-passo do que fazer todos os dias.</div>
+        <div style="font-weight: 900; color: var(--success); background: var(--success-bg); padding: 8px; border-radius: 8px; display: inline-block;"><span style="text-decoration: line-through; color: var(--muted); font-size: 13px; font-weight: 600; margin-right: 8px;">97 MZN</span> Grátis Incluído</div>
+      </div>
+
+      <!-- Item 5 -->
+      <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 12px 30px rgba(0,0,0,0.3);">
+        <img src="images/user_scripts.jpg" alt="Guia de Fechamento" style="max-height: 160px; margin: 0 auto 20px; display: block; object-fit: contain; border-radius: 8px;">
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Guia de Fechamento</h3>
+        <div style="font-size: 14px; color: var(--muted); margin-bottom: 16px;">Estratégias avançadas de persuasão.</div>
+        <div style="font-weight: 900; color: var(--success); background: var(--success-bg); padding: 8px; border-radius: 8px; display: inline-block;"><span style="text-decoration: line-through; color: var(--muted); font-size: 13px; font-weight: 600; margin-right: 8px;">297 MZN</span> Grátis Incluído</div>
+      </div>
+
+      <!-- Item Total -->
+      <div style="background: linear-gradient(135deg, var(--orange) 0%, var(--indigo) 100%); color: #fff; border-radius: 16px; padding: 32px 24px; text-align: center; box-shadow: 0 20px 40px rgba(99,102,241,0.4); display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);"></div>
+        <div style="position: relative; z-index: 1;">
+          <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px; opacity: 0.9;">Valor Total de Tudo:</div>
+          <div style="font-size: 32px; font-weight: 900; text-decoration: line-through; opacity: 0.7; margin-bottom: 16px;">1.579 MZN</div>
+          <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #FCD34D;">Hoje, levas tudo por apenas:</div>
+          <div style="font-size: 56px; font-weight: 900; line-height: 1; letter-spacing: -2px;">197 <span style="font-size:24px; letter-spacing:0;">MZN</span></div>
+        </div>
+      </div>
     </div>
-    <div class="cta-center" style="margin-top:44px;">
-      <a href="https://pay.lojou.app/p/p94no" class="cta-btn" id="what-cta-btn">SIM, EU QUERO ESTES RESULTADOS →</a>
+    
+    <div class="cta-center" style="margin-top:30px;">
+      <a href="https://pay.lojou.app/p/p94no" class="cta-btn" id="what-cta-btn">QUERO RECEBER O KIT COMPLETO →</a>
     </div>
   </div>
 </section>
@@ -629,51 +814,61 @@
 <!-- ⑪ COMPARISON TABLE -->
 <section class="section">
   <div class="container">
-    <h2 class="sec-title">MCD vs. <span class="hl">O que a maioria faz</span></h2>
-    <p class="sec-sub">Não é tu que falhaste — era o método errado para o teu mercado. Compara e decide por ti mesmo.</p>
+    <h2 class="sec-title">A Diferença é <span class="hl">Clara</span></h2>
     <div class="table-wrap" style="overflow-x:auto;">
       <table class="comp-table">
         <thead>
           <tr>
-            <th>Característica</th>
-            <th class="col-bad">Método Antigo</th>
-            <th class="col-good">✦ Clientes Todo Dia</th>
+            <th>Situação</th>
+            <th class="col-bad">Sem o Sistema</th>
+            <th class="col-good">Com o Sistema Cliente Diário</th>
           </tr>
         </thead>
         <tbody>
-          <tr style="background: rgba(99,102,241,0.08); border-bottom: 2px solid var(--orange);">
-            <td style="font-size: 16px; color: var(--orange);"><strong>O Método para Moçambique</strong></td>
-            <td class="bad" style="font-weight:600;">YouTube (Focado no Brasil)</td>
-            <td class="good" style="font-size: 16px;">✦ O Método Cliente Diário</td>
+          <tr>
+            <td>Captação de Clientes</td>
+            <td class="bad">Continua sem clientes ou dependente de indicações</td>
+            <td class="good">Sistema claro e automático a rodar</td>
           </tr>
           <tr>
-            <td>Foco da aprendizagem</td>
-            <td class="bad">Teoria chata</td>
-            <td class="good">100% Prática</td>
+            <td>Método de Venda</td>
+            <td class="bad">Continua sem estratégia, a publicar por publicar</td>
+            <td class="good">Processo replicável de 4 etapas</td>
           </tr>
           <tr>
-            <td>Tempo para resultados</td>
-            <td class="bad">Meses a tentar</td>
-            <td class="good">Em 48 horas</td>
+            <td>Previsibilidade</td>
+            <td class="bad">Dependente da sorte</td>
+            <td class="good">Mais oportunidades de venda diárias</td>
           </tr>
           <tr>
-            <td>Criação de conteúdo</td>
-            <td class="bad">Todos os dias</td>
-            <td class="good">Não é necessário</td>
-          </tr>
-          <tr>
-            <td>Investimento financeiro</td>
-            <td class="bad">Agências caras</td>
-            <td class="good">Fazes tu — pag. único</td>
-          </tr>
-
-          <tr>
-            <td>Suporte incluído</td>
-            <td class="bad">Sozinho</td>
-            <td class="good">WhatsApp directo</td>
+            <td>Retorno do Esforço</td>
+            <td class="bad">Muito trabalho, zero resultados</td>
+            <td class="good">Pouco esforço, alta conversão no WhatsApp</td>
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+</section>
+
+<!-- SECÇÃO: ROI (MOVIDA PARA ANTES DO PREÇO) -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-title">Quanto vale um único <span class="hl">cliente para ti?</span></h2>
+    <p class="sec-sub">Vamos fazer contas simples. Não se trata de gastar, mas sim de investir numa máquina de retorno.</p>
+    
+    <div class="price-box" style="border-color: var(--success); box-shadow: 0 20px 50px rgba(29,158,117,0.15);">
+      <div class="price-badge" style="background: var(--success);">O TEU RETORNO</div>
+      <p style="font-size:16px; margin:20px 0;">Se um cliente te gerar apenas <strong>500 MZN</strong>...</p>
+      <p style="font-size:16px; margin:10px 0;">E o nosso sistema te ajudar a conseguir <strong>apenas 1 cliente</strong>...</p>
+      <div style="background: var(--success-bg); padding:15px; border-radius:10px; margin:20px 0;">
+        <strong style="color:var(--success); font-size:18px;">Precisas de apenas 1 cliente para recuperar o investimento.</strong>
+      </div>
+      <p style="font-size:16px; margin:15px 0;">Se conseguires <strong>2 clientes: 1.000 MZN</strong></p>
+      <p style="font-size:16px; margin:15px 0;">Se conseguires <strong>5 clientes: 2.500 MZN</strong></p>
+      <div class="cta-center" style="margin-top:30px;">
+        <a href="https://pay.lojou.app/p/p94no" class="cta-btn" style="background: var(--success); box-shadow: 0 12px 28px rgba(29,158,117,0.45);">QUERO RECEBER O SISTEMA AGORA →</a>
+      </div>
     </div>
   </div>
 </section>
@@ -684,30 +879,42 @@
     <h2 class="sec-title">Acesso Completo por Apenas <span class="hl">197 MZN</span></h2>
     <p class="sec-sub">Pagamento único, sem mensalidades, sem surpresas.</p>
 
-    <div class="price-box">
-      <div class="price-badge">ACESSO VITALÍCIO</div>
-      <div class="price-label">Pagamento único, sem mensalidades</div>
-      <div class="price-old">600 MZN</div>
-      <div class="price-val"><small>MZN</small> 197</div>
-      <div class="price-pill">⚡ Preço Promocional Activo</div>
-      <ul class="price-list">
-        <li>Acesso imediato às aulas práticas</li>
-        <li>Templates de Anúncios Vencedores</li>
-        <li>Estratégia WhatsApp & Instagram</li>
-        <li>Suporte Dedicado via WhatsApp</li>
-        <li>Atualizações Gratuitas Incluídas</li>
-      </ul>
-      <a href="https://pay.lojou.app/p/p94no" class="cta-btn" id="price-cta-btn" style="max-width:100%;">
-        GARANTIR O MEU ACESSO AGORA →
+    <div class="price-box" style="border: 4px solid var(--orange); padding: 40px; box-shadow: 0 24px 60px rgba(99,102,241,0.25);">
+      <div class="price-badge" style="font-size: 14px; padding: 10px 24px; top: -20px;">🔥 OFERTA DE LANÇAMENTO</div>
+      
+      <!-- Valor Discriminado -->
+      <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 24px; margin-bottom: 30px; text-align: left; border: 1px solid var(--border);">
+        <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 16px; color: var(--text);">Resumo do que vais receber hoje:</h4>
+        <div style="display:flex; justify-content:space-between; margin-bottom: 12px; font-size:15px; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><span><span style="color:var(--success);">✓</span> Sistema Cliente Diário</span> <span style="font-weight:700;">497 MZN</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom: 12px; font-size:15px; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><span><span style="color:var(--success);">✓</span> Scripts de Captação</span> <span style="font-weight:700;">197 MZN</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom: 12px; font-size:15px; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><span><span style="color:var(--success);">✓</span> Mensagens de WhatsApp</span> <span style="font-weight:700;">197 MZN</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom: 12px; font-size:15px; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><span><span style="color:var(--success);">✓</span> Plano & Checklist</span> <span style="font-weight:700;">194 MZN</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom: 12px; font-size:15px; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><span><span style="color:var(--success);">✓</span> Guia de Fechamento</span> <span style="font-weight:700;">297 MZN</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom: 12px; font-size:15px;"><span><span style="color:var(--success);">✓</span> Bónus Exclusivos</span> <span style="font-weight:700;">197 MZN</span></div>
+        
+        <div style="border-top: 2px solid var(--text); margin-top: 16px; padding-top: 16px; display:flex; justify-content:space-between; font-size:18px; color: var(--danger);">
+          <span>Valor Real Total:</span> <span style="font-weight:900; text-decoration: line-through;">1.579 MZN</span>
+        </div>
+      </div>
+
+      <div class="price-label" style="font-size: 18px; color: var(--muted); margin-bottom: 5px;">LEVAS TUDO HOJE POR APENAS:</div>
+      <div class="price-val" style="color: var(--text); font-size: clamp(64px, 12vw, 84px); letter-spacing: -3px; line-height: 1;"><small style="font-size: 24px; color: var(--orange); vertical-align: middle; margin-right: 5px;">MZN</small>197</div>
+      
+      <a href="https://pay.lojou.app/p/p94no" class="cta-btn" id="price-cta-btn" style="max-width:100%; margin-top:24px; font-size: 20px; padding: 24px;">
+        QUERO RECEBER TUDO AGORA →
       </a>
-      <p class="price-pay-sub">💳 Paga facilmente por <strong>M-Pesa</strong>, <strong>e-Mola</strong> ou <strong>mKesh</strong>.<br>Acesso imediato após confirmação.</p>
+      <p class="price-pay-sub" style="font-size: 14px; margin-top:20px; color: var(--muted);">💳 Pagamento 100% seguro via <strong>M-Pesa</strong>, <strong>e-Mola</strong> ou <strong>mKesh</strong>.<br>O acesso é enviado imediatamente após a confirmação.</p>
     </div>
 
-    <div class="guarantee">
-      <div class="guarantee-icon">🛡️</div>
+    <!-- GARANTIA SELO VISUAL -->
+    <div class="guarantee" style="background: linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(245,158,11,0.05) 100%); border: 2px solid #F59E0B; border-radius: 20px; padding: 32px; display: flex; align-items: center; gap: 30px; margin-top: 50px; max-width: 680px; box-shadow: 0 16px 40px rgba(245,158,11,0.15); margin-left: auto; margin-right: auto; text-align: left;">
+      <div style="flex-shrink: 0; background: #F59E0B; color: #fff; width: 100px; height: 100px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 4px solid var(--bg-main); outline: 2px solid #F59E0B; box-shadow: 0 10px 20px rgba(245,158,11,0.3);">
+        <div style="font-size: 38px; font-weight: 900; line-height: 1; margin-bottom: -2px;">7</div>
+        <div style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">Dias</div>
+      </div>
       <div>
-        <h4>Garantia Incondicional de 7 Dias</h4>
-        <p>Entra, vê as aulas e aplica o método. Se em 7 dias sentires que não vale o que pagaste, manda-nos uma mensagem e devolvemos tudo — 100% dos teus meticais, sem perguntas e sem complicações.</p>
+        <h4 style="font-size: 22px; font-weight: 900; color: #FCD34D; margin-bottom: 8px; letter-spacing: -0.5px;">Garantia Incondicional</h4>
+        <p style="font-size: 15px; color: #FDE68A; line-height: 1.6; margin: 0;">Testa o sistema. Se não fizer sentido para ti, podes pedir o reembolso total. Sem perguntas. Sem complicações. <strong>Risco Zero.</strong></p>
       </div>
     </div>
   </div>
@@ -720,46 +927,71 @@
     <div class="faq-list" style="margin-top:40px;">
       
       <div class="faq-item open">
-        <div class="faq-q">Preciso de computador para fazer o curso? <span class="faq-icon">+</span></div>
-        <div class="faq-a">Não precisas de computador. O curso foi desenhado para usar no telemóvel — o mesmo que já tens no bolso. Qualquer Android com internet já chega.</div>
+        <div class="faq-q">Preciso de computador para usar o sistema? <span class="faq-icon">+</span></div>
+        <div class="faq-a">Não precisas de computador. O sistema foi desenhado para usar no telemóvel — o mesmo que já tens no bolso. Qualquer Android com internet já chega.</div>
       </div>
 
       <div class="faq-item">
         <div class="faq-q">Como é que recebo o acesso depois de pagar? <span class="faq-icon">+</span></div>
-        <div class="faq-a">Após confirmação do pagamento — seja por M-Pesa, e-Mola ou mKesh — recebes o acesso imediatamente por WhatsApp. Em menos de 5 minutos já estás dentro.</div>
+        <div class="faq-a">Após confirmação do pagamento — seja por M-Pesa, e-Mola ou mKesh — recebes o acesso imediatamente por WhatsApp. Em menos de 5 minutos já estás a aplicar.</div>
       </div>
 
       <div class="faq-item">
         <div class="faq-q">Não sei nada de anúncios, consigo fazer? <span class="faq-icon">+</span></div>
-        <div class="faq-a">Sim, mesmo que nunca tenhas feito um anúncio na vida. O método começa do zero — se sabes usar o Facebook no telemóvel, já tens tudo o que precisas para começar.</div>
+        <div class="faq-a">Sim, porque não vais precisar de criar nada do zero. Nós já fizemos o trabalho difícil e entregamos-te os templates e scripts prontos a usar.</div>
       </div>
 
       <div class="faq-item">
         <div class="faq-q">197 meticais é muito para mim agora. Vale mesmo a pena? <span class="faq-icon">+</span></div>
-        <div class="faq-a">Pensa assim: se o método te trouxer apenas 1 cliente novo por semana, em quanto tempo recuperas os 197 meticais? Provavelmente em menos de um dia. Os nossos alunos vêem retorno na primeira semana.</div>
+        <div class="faq-a">Pensa assim: se o sistema te trouxer apenas 1 cliente novo, em quanto tempo recuperas os 197 meticais? Provavelmente em menos de um dia. Trata-se de um investimento com retorno garantido.</div>
       </div>
 
       <div class="faq-item">
-        <div class="faq-q">Tenho um negócio e não tenho muito tempo. Consigo acompanhar? <span class="faq-icon">+</span></div>
-        <div class="faq-a">As aulas são curtas — entre 5 a 15 minutos cada. Podes ver no telemóvel em qualquer lugar: na hora de almoço, no caminho para o trabalho, em casa à noite. Não precisas de um dia inteiro.</div>
+        <div class="faq-q">Tenho um negócio e não tenho muito tempo. Consigo aplicar? <span class="faq-icon">+</span></div>
+        <div class="faq-a">É exatamente por isso que criámos as ferramentas prontas. Não precisas de perder horas a aprender teorias. Apenas copias, colas e publicas em minutos.</div>
       </div>
 
       <div class="faq-item">
         <div class="faq-q">Como sei que não é mais um curso que não funciona? <span class="faq-icon">+</span></div>
-        <div class="faq-a">Percebemos a tua desconfiança — há muita coisa por aí que promete e não entrega. Por isso temos a garantia de 7 dias: testa o curso sem risco. Se não gostar, devolvemos tudo. Sem desculpas, sem complicações.</div>
+        <div class="faq-a">Porque este NÃO é um curso focado em teoria. É um Kit de Implementação Prática. E além disso, tens a nossa garantia de 7 dias: testa e, se não gostares, devolvemos o teu dinheiro.</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- ⑭ FINAL CTA -->
+<!-- ⑭ CONTRASTE 30 DIAS -->
+<section class="section">
+  <div class="container">
+    <h2 class="sec-title">Daqui a 30 dias existem <span class="hl">apenas dois cenários</span></h2>
+    <div class="cards-6" style="grid-template-columns: 1fr 1fr; max-width: 800px; margin: 40px auto 0;">
+      <div class="feat-card" style="text-align:left; border-color: var(--danger); background: rgba(239, 68, 68, 0.08);">
+        <h3 style="color:var(--danger); font-size:18px; margin-bottom:15px;">Sem o Método:</h3>
+        <ul style="list-style:none; padding:0; color:var(--text);">
+          <li style="margin-bottom:10px;">❌ Continuas sem estratégia.</li>
+          <li style="margin-bottom:10px;">❌ Continuas sem clientes consistentes.</li>
+          <li style="margin-bottom:10px;">❌ Continuas dependente da sorte.</li>
+        </ul>
+      </div>
+      <div class="feat-card" style="text-align:left; border-color: var(--success); background: var(--success-bg);">
+        <h3 style="color:var(--success); font-size:18px; margin-bottom:15px;">Com o Método:</h3>
+        <ul style="list-style:none; padding:0; color:var(--text);">
+          <li style="margin-bottom:10px;">✅ Tens um processo claro.</li>
+          <li style="margin-bottom:10px;">✅ Tens ferramentas prontas.</li>
+          <li style="margin-bottom:10px;">✅ Tens mais oportunidades de gerar clientes.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⑮ FINAL CTA -->
 <section class="final-cta">
   <div class="container">
     <h2>A tua vez de ter clientes a entrar <span style="color:var(--orange);">todos os dias.</span></h2>
-    <p>Enquanto lês isto, outros negócios em Moçambique já estão a usar este método. Entra agora.</p>
+    <p>Enquanto lês isto, outros negócios em Moçambique já estão a usar estas ferramentas. Entra agora.</p>
     <div class="cta-center">
-      <a href="https://pay.lojou.app/p/p94no" class="cta-btn" id="final-cta-btn">QUERO CLIENTES NOVOS HOJE →</a>
+      <a href="https://pay.lojou.app/p/p94no" class="cta-btn" id="final-cta-btn">QUERO COMEÇAR HOJE →</a>
       <div class="cta-meta">
         <span>Acesso imediato</span>
         <span>M-Pesa / e-Mola / mKesh aceites</span>
@@ -804,6 +1036,29 @@
   .pp-action { font-size: 12px; color: #64748B; margin-top: 2px; }
   .pp-time { font-size: 11px; color: #94A3B8; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
   .pp-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); display: inline-block; }
+  @media(max-width: 600px) { .purchase-popup { bottom: 80px; } }
+
+  /* FLOATING CTA (Mobile Only) */
+  .floating-wrapper { display: none; }
+  @media(max-width: 768px) {
+    .floating-wrapper {
+      display: flex; position: fixed; bottom: 16px; left: 0; right: 0; z-index: 9998;
+      justify-content: center; pointer-events: none;
+      transform: translateY(150px); opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease;
+      padding: 0 20px; box-sizing: border-box;
+    }
+    .floating-wrapper.show { transform: translateY(0); opacity: 1; }
+    .floating-cta-btn {
+      background: linear-gradient(180deg, var(--orange) 0%, var(--orange-dark) 100%); color: #fff;
+      font-size: 16px; font-weight: 900; letter-spacing: -0.3px;
+      padding: 18px; border-radius: 14px; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
+      box-shadow: 0 12px 30px rgba(249,115,22,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+      animation: ctaPulse 2.5s infinite; text-transform: uppercase;
+      display: inline-block; width: 100%; max-width: 400px; text-align: center; pointer-events: auto;
+      box-sizing: border-box;
+    }
+  }
 </style>
 
 <!-- PURCHASE NOTIFICATION POPUP -->
@@ -814,6 +1069,13 @@
     <div class="pp-action">acabou de garantir o acesso 🎉</div>
     <div class="pp-time"><span class="pp-dot"></span> <span id="ppTime">agora mesmo</span></div>
   </div>
+</div>
+
+<!-- FLOATING CTA -->
+<div class="floating-wrapper" id="floatingWrapper">
+  <a href="https://pay.lojou.app/p/p94no" class="floating-cta-btn">
+    QUERO COMEÇAR HOJE →
+  </a>
 </div>
 
 <script>
@@ -892,6 +1154,16 @@
     observer.observe(el);
   });
 
+  // Floating CTA Scroll
+  const floatingWrapper = document.getElementById('floatingWrapper');
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 600) {
+      floatingWrapper.classList.add('show');
+    } else {
+      floatingWrapper.classList.remove('show');
+    }
+  }, { passive: true });
+
   // UTM passthrough to Lojou links
   (function() {
     const utmParams = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid'];
@@ -939,6 +1211,33 @@
     showPopup();
     setInterval(showPopup, Math.floor(Math.random() * 20000) + 20000);
   }, 6000);
+</script>
+
+<!-- BACK REDIRECT -->
+<script>
+  // Redireciona para a página de oferta (Última Oportunidade)
+  const link = 'https://www.clientetodsdia.site/oferta.html';
+
+  function setBackRedirect(url) {
+    let urlBackRedirect = url;
+    urlBackRedirect = urlBackRedirect =
+      urlBackRedirect.trim() +
+      (urlBackRedirect.indexOf('?') > 0 ? '&' : '?') +
+      document.location.search.replace('?', '').toString();
+
+    history.pushState({}, '', location.href);
+    history.pushState({}, '', location.href);
+    history.pushState({}, '', location.href);
+
+    window.addEventListener('popstate', () => {
+      console.log('onpopstate', urlBackRedirect);
+      setTimeout(() => {
+        location.href = urlBackRedirect;
+      }, 1);
+    });
+  }
+
+  setBackRedirect(link);
 </script>
 </body>
 </html>
